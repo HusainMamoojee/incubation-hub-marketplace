@@ -13,5 +13,5 @@ Eduvos Hack Jam 2026 project: a marketplace where Incubation Hub student entrepr
 - _[Deanara Ramharakh]_ – _[Data Scientist]_
 ## Note
  
-Built for the Eduvos Hack Jam 2026. All work is the property of Eduvos. AI use is logged in `AI_USAGE.md`.
+Built for the Eduvos Hack Jam 2026
  
