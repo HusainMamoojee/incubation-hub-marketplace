@@ -1,0 +1,70 @@
+
+/*Variables defined in root can be used everywhere*/
+:root{
+/* Brand colours */
+  --indigo: #4F46E5;
+  --indigo-dark: #3730A3;
+  --violet: #7C3AED;
+  --mint: #6EE7B7;
+  --mint-dark: #059669;
+
+  /* Backgrounds and borders */
+  --white: #FFFFFF;
+  --bg: #F8FAFC;
+  --lavender: #EEF2FF;
+  --border: #E2E8F0;
+
+  /* Text */
+  --text: #0F172A;
+  --text-muted: #64748B;
+
+  /* Reusable effects */
+  --gradient: linear-gradient(135deg, #4F46E5, #7C3AED);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 40px rgba(15, 23, 42, 0.12);
+
+  /* Layout and font */
+  --container: 1160px;
+  --font: "Inter", system-ui, sans-serif;
+}
+
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input {
+  font: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 20px;
+}
