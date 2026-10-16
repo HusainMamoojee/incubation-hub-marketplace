@@ -333,3 +333,82 @@ button, input {
   border-color: var(--indigo);
   color: var(--indigo);
 }
+
+/* ---------- Sections (reusable) ---------- */
+.section {
+  padding: 88px 0;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+.section-head h2 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.section-head p {
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--indigo);
+  margin-bottom: 8px;
+}
+
+/* ---------- How it works ---------- */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.step {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.step:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.step-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: var(--lavender);
+  color: var(--indigo);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.step .phase {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.step h3 {
+  font-size: 1.05rem;
+  margin: 4px 0 8px;
+}
+.step p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
