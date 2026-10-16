@@ -35,6 +35,7 @@
 </header>
 
 
+
 <main>
   <section class="hero">
     <div class="container">
@@ -73,6 +74,34 @@
 
     </div>
   </section>
+
+  <section class="search-section">
+  <div class="container">
+    <div class="search-box">
+
+      <form class="search-form" id="searchForm" action="browse.html" method="get">
+        <input
+          type="search"
+          name="q"
+          id="searchInput"
+          placeholder="What are you looking for? e.g. tutoring, baked goods, photography"
+          aria-label="Search the marketplace">
+        <button type="submit" class="btn btn-indigo">Search</button>
+      </form>
+
+      <div class="chips">
+        <span class="label">POPULAR</span>
+        <button class="chip" type="button">Tutoring</button>
+        <button class="chip" type="button">Food &amp; snacks</button>
+        <button class="chip" type="button">Fashion</button>
+        <button class="chip" type="button">Photography</button>
+        <button class="chip" type="button">Design</button>
+        <button class="chip" type="button">Tech help</button>
+      </div>
+
+    </div>
+  </div>
+</section>
 </main>
 
   <script src="js/main.js"></script>

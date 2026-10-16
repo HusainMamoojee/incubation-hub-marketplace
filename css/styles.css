@@ -266,3 +266,70 @@ button, input {
 
 .float-top { top: 20px; left: 20px; }
 .float-bottom { bottom: 20px; right: 20px; }
+
+
+/* ---------- Search ---------- */
+.search-section {
+  margin-top: -28px;
+  position: relative;
+  z-index: 2;
+}
+
+.search-box {
+  max-width: 820px;
+  margin: 0 auto;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 16px;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+}
+
+.search-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.search-form input:focus {
+  border-color: var(--indigo);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.chips .label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.chip {
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.chip:hover {
+  border-color: var(--indigo);
+  color: var(--indigo);
+}
