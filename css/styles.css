@@ -1,7 +1,6 @@
-
-/*Variables defined in root can be used everywhere*/
-:root{
-/* Brand colours */
+/* Variables defined in :root can be used everywhere */
+:root {
+  /* Brand colours */
   --indigo: #4F46E5;
   --indigo-dark: #3730A3;
   --violet: #7C3AED;
@@ -30,7 +29,7 @@
   --font: "Inter", system-ui, sans-serif;
 }
 
-
+/* ---------- Reset and base ---------- */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -69,7 +68,6 @@ button, input {
   padding: 0 20px;
 }
 
-
 /* ---------- Buttons ---------- */
 .btn {
   display: inline-flex;
@@ -94,7 +92,6 @@ button, input {
 .btn-ghost:hover { background: var(--white); }
 
 .btn-sm { padding: 8px 14px; font-size: 0.85rem; }
-
 
 /* ---------- Header ---------- */
 .site-header {
@@ -159,3 +156,113 @@ button, input {
 }
 
 .menu-toggle { display: none; }
+
+/* ---------- Small reusable pieces ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mint-dark);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--indigo);
+  color: var(--white);
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  padding: 72px 0 48px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(124, 58, 237, 0.08), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(110, 231, 183, 0.15), transparent 40%);
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  max-width: 820px;
+  margin: 20px auto 18px;
+}
+.hero h1 .highlight { color: var(--indigo); }
+
+.hero .lead {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  max-width: 620px;
+  margin: 0 auto 28px;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-trust {
+  margin-top: 18px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.hero-trust span { color: var(--mint-dark); font-weight: 600; }
+
+/* ---------- Hero image and floating cards ---------- */
+.hero-visual {
+  position: relative;
+  margin: 48px auto 0;
+  max-width: 980px;
+  height: 420px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  background: var(--gradient);
+}
+.hero-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.float-card {
+  position: absolute;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.8rem;
+}
+.float-card strong { display: block; font-size: 0.9rem; }
+.float-card .muted { color: var(--text-muted); }
+
+.float-top { top: 20px; left: 20px; }
+.float-bottom { bottom: 20px; right: 20px; }
