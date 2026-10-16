@@ -683,3 +683,81 @@ button, input {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
+
+@media (max-width: 760px) {
+  /* these rules ONLY apply when the screen is 760px wide or less */
+}
+
+/* ==========================================================
+   RESPONSIVE: keep these at the bottom of the file
+   ========================================================== */
+
+/* ---------- Tablet (960px and below) ---------- */
+@media (max-width: 960px) {
+  .steps { grid-template-columns: repeat(2, 1fr); }
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+
+  .hub-block {
+    grid-template-columns: 1fr;
+    padding: 32px;
+  }
+}
+
+/* ---------- Phone (760px and below) ---------- */
+@media (max-width: 760px) {
+
+  /* Header: hide links, show the ☰ button */
+  .logo small { display: none; }
+  .nav-actions .btn-ghost { display: none; }
+  .nav-links { display: none; }
+
+  .menu-toggle {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  /* The open menu (JavaScript adds .open) */
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: absolute;
+    top: 68px;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  /* Hero */
+  .hero { padding-top: 48px; }
+  .hero-visual { height: 260px; }
+  .float-card { display: none; }
+
+  /* Search: stack the input and button */
+  .search-form { flex-direction: column; }
+
+  /* Everything to one column */
+  .steps,
+  .card-grid,
+  .checks,
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Tighter spacing */
+  .section { padding: 64px 0; }
+  .hub-block { padding: 24px; }
+  .cta { padding: 48px 20px; }
+  .site-footer { margin-top: 64px; }
+}
