@@ -42,6 +42,20 @@ document.querySelectorAll(".auth-form input, .auth-form select").forEach((el) =>
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
+
+  // Coming from registration? Show a welcome message and pre-fill the email
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get("registered") === "1") {
+    showMessage(
+      document.getElementById("formMessage"),
+      "Your account is ready. Log in to continue.",
+      "success"
+    );
+    document.getElementById("email").value = params.get("email") || "";
+    document.getElementById("password").focus();
+  }
+
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     clearErrors(loginForm);
@@ -61,8 +75,9 @@ if (loginForm) {
     }
     if (!valid) return;
 
+    // Fake login for now: step 5 replaces this with Supabase
     showMessage(box, "Logged in. Taking you to the marketplace...", "success");
-    setTimeout(() => { window.location.href = "browse.html"; }, 900);
+    setTimeout(() => { window.location.href = "index.html"; }, 900);
   });
 }
 
@@ -70,7 +85,7 @@ if (loginForm) {
 const registerForm = document.getElementById("registerForm");
 
 if (registerForm) {
-  registerForm.addEventListener("submit", (e) => {
+  registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearErrors(registerForm);
 
@@ -114,7 +129,40 @@ if (registerForm) {
     }
     if (!valid) return;
 
-    showMessage(box, "Account created. Check your Eduvos email to verify it.", "success");
-    registerForm.reset();
+    // Stop double-clicks while we wait for Supabase
+    const submitBtn = registerForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Creating account...";
+
+    // Create the account in Supabase
+    const { error } = await supabaseClient.auth.signUp({
+      email: email.value.trim(),
+      password: password.value,
+      options: {
+        data: {
+          first_name: firstName.value.trim(),
+          last_name: lastName.value.trim(),
+          campus: campus.value
+        }
+      }
+    });
+
+    // If something went wrong, show it and let them try again
+    if (error) {
+      showMessage(box, error.message, "error");
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Create account";
+      return;
+    }
+
+    // Success: sign out the automatic session, then send them to log in
+    await supabaseClient.auth.signOut();
+
+    showMessage(box, "Account created! Taking you to log in...", "success");
+
+    const registeredEmail = encodeURIComponent(email.value.trim());
+    setTimeout(() => {
+      window.location.href = `login.html?registered=1&email=${registeredEmail}`;
+    }, 1200);
   });
 }
