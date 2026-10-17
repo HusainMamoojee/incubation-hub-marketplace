@@ -1,5 +1,6 @@
 const EDUVOS_EMAIL = /^[^\s@]+@([a-z0-9-]+\.)*vossie\.net$/i;
 
+
 // ---------- Show / hide password ----------
 document.querySelectorAll(".pw-toggle").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -56,7 +57,7 @@ if (loginForm) {
     document.getElementById("password").focus();
   }
 
-  loginForm.addEventListener("submit", (e) => {
+  loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearErrors(loginForm);
 
@@ -75,9 +76,38 @@ if (loginForm) {
     }
     if (!valid) return;
 
-    // Fake login for now: step 5 replaces this with Supabase
-    showMessage(box, "Logged in. Taking you to the marketplace...", "success");
-    setTimeout(() => { window.location.href = "index.html"; }, 900);
+    // Stop double-clicks while we wait for Supabase
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Logging in...";
+
+    // Check the email and password with Supabase
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email: email.value.trim(),
+      password: password.value
+    });
+
+    // Wrong details (or another problem): show a friendly message
+    if (error) {
+      let message = error.message;
+
+      if (error.message === "Invalid login credentials") {
+        message = "That email and password don't match. Please try again.";
+      } else if (error.message === "Email not confirmed") {
+        message = "Please confirm your email first. Check your Eduvos inbox for the link.";
+      }
+
+      showMessage(box, message, "error");
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Log in";
+      password.value = "";
+      password.focus();
+      return;
+    }
+
+    // Success: go to the logged-in home page
+    showMessage(box, "Logged in! Taking you to Hub Market...", "success");
+    setTimeout(() => { window.location.href = HOME_PAGE; }, 800);
   });
 }
 
