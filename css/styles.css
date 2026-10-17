@@ -761,3 +761,9 @@ button, input {
   .cta { padding: 48px 20px; }
   .site-footer { margin-top: 64px; }
 }
+
+
+/* Protected pages stay hidden until session.js confirms a login */
+body[data-protected]:not(.auth-ready) {
+  visibility: hidden;
+}

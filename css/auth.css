@@ -232,3 +232,10 @@
   .field-row { grid-template-columns: 1fr; }
   .choice-group { grid-template-columns: 1fr; }
 }
+
+/* Button while waiting for Supabase */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
