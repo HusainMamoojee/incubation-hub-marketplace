@@ -1,0 +1,234 @@
+.auth-section {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 68px);
+  padding: 28px 20px;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(124, 58, 237, 0.08), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(110, 231, 183, 0.15), transparent 40%),
+    var(--bg);
+}
+
+/* grad caps, pencils, books, lightbulbs, stars */
+.auth-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.14;
+  background-size: 280px 280px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 260'%3E%3Cg fill='none' stroke='%234F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 25L40 12L70 25L40 38Z'/%3E%3Cpath d='M22 31V46Q40 56 58 46V31M70 25V42'/%3E%3Cpath d='M150 60L190 20L202 32L162 72ZM150 60L146 76L162 72M184 26L196 38'/%3E%3Cpath d='M10 150Q30 140 45 150V190Q30 180 10 190ZM45 150Q60 140 80 150V190Q60 180 45 190'/%3E%3Ccircle cx='180' cy='150' r='16'/%3E%3Cpath d='M172 172H188M174 179H186'/%3E%3Cpolygon points='120,92 125,105 139,105 128,113 132,127 120,119 108,127 112,113 101,105 115,105'/%3E%3Cpath d='M80 225q10 -14 20 0t20 0t20 0'/%3E%3Cpath d='M225 100V120M215 110H235'/%3E%3Ccircle cx='230' cy='215' r='6'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.auth-page .site-footer { margin-top: 0; }
+
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  padding: 28px 32px;
+}
+.auth-card.wide { max-width: 560px; }
+
+.auth-card h1 {
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.auth-sub {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+/* ---------- Form ---------- */
+.auth-form {
+  display: grid;
+  gap: 12px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.field label,
+.field .field-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="password"],
+.field select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.field input:focus,
+.field select:focus {
+  border-color: var(--indigo);
+  background-color: var(--white);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.field.invalid input,
+.field.invalid select {
+  border-color: #DC2626;
+  background-color: #FEF2F2;
+}
+
+/* Campus dropdown: same size as the other inputs, with our own arrow */
+.field select {
+  -webkit-appearance: none;
+  appearance: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding-right: 42px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+}
+.field-error {
+  display: none;
+  margin-top: 5px;
+  font-size: 0.78rem;
+  color: #DC2626;
+}
+.field.invalid .field-error { display: block; }
+
+.hint {
+  margin-top: 5px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Password field with show/hide button */
+.pw-wrap { position: relative; }
+.pw-wrap input { padding-right: 70px; }
+.pw-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--indigo);
+  cursor: pointer;
+}
+
+/* Buy / sell choice */
+.choice-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.choice { position: relative; }
+.choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.choice span {
+  display: block;
+  text-align: center;
+  padding: 10px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.choice span:hover { border-color: var(--indigo); }
+.choice input:checked + span {
+  border-color: var(--indigo);
+  background: var(--lavender);
+  color: var(--indigo);
+  font-weight: 600;
+}
+.choice input:focus-visible + span {
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+}
+
+/* Checkboxes and small rows */
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+.check input {
+  margin-top: 4px;
+  accent-color: var(--indigo);
+}
+.check a, .auth-link { color: var(--indigo); font-weight: 600; }
+.check a:hover, .auth-link:hover { text-decoration: underline; }
+
+.form-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.84rem;
+}
+
+.btn-block { width: 100%; padding: 13px 22px; }
+
+.auth-switch {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+/* Message after submitting */
+.form-message {
+  display: none;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.86rem;
+  font-weight: 500;
+}
+.form-message.show { display: block; }
+.form-message.success { background: #D1FAE5; color: var(--mint-dark); }
+.form-message.error { background: #FEF2F2; color: #DC2626; }
+
+/* Active link in the nav */
+.nav-actions .btn-ghost.active {
+  background: var(--white);
+  border-color: var(--indigo);
+  color: var(--indigo);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 520px) {
+  .auth-section::before { background-size: 220px 220px; }
+  .auth-card { padding: 28px 22px; }
+  .field-row { grid-template-columns: 1fr; }
+  .choice-group { grid-template-columns: 1fr; }
+}
