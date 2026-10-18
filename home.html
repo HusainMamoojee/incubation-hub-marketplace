@@ -1,11 +1,309 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | Hub Market</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/home.css">
 </head>
-<body>
-<h1>Welcome to Hub Market</h1>
+
+<body class="home-page" data-protected>
+
+<header class="site-header">
+  <nav class="container nav">
+
+    <a href="home.html" class="logo">
+      <span class="logo-mark">HM</span>
+      <span>Hub Market<small>EDUVOS INCUBATION HUB</small></span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="browse.html">Browse</a></li>
+      <li><a href="#featured">Featured</a></li>
+      <li><a href="#sell">Sell</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <div class="nav-user">
+        <span class="avatar" id="userAvatar">HM</span>
+        <span class="user-name" id="headerName"></span>
+      </div>
+      <button type="button" class="btn btn-sm logout-btn" id="logoutBtn">Log out</button>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+
+  </nav>
+</header>
+
+<main>
+
+  <section class="dash-hero">
+    <div class="container">
+
+      <div class="dash-top">
+        <div class="dash-title">
+          <h1>Welcome back, <span id="userName">there</span></h1>
+          <span class="campus-pill" id="campusPill">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            <span id="campusName"></span>
+          </span>
+        </div>
+
+        <form class="top-search" id="searchForm" action="browse.html" method="get">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input
+            type="search"
+            name="q"
+            id="searchInput"
+            placeholder="Search tutoring, products, services..."
+            aria-label="Search the marketplace">
+        </form>
+      </div>
+
+      <div class="stat-cards">
+        <div class="stat-card">
+          <small>Enquiries sent</small>
+          <strong id="statEnquiries">3</strong>
+        </div>
+        <div class="stat-card">
+          <small>Saved listings</small>
+          <strong id="statSaved">0</strong>
+        </div>
+        <div class="stat-card">
+          <small>Bookings</small>
+          <strong id="statBookings">0</strong>
+        </div>
+        <div class="stat-card">
+          <small>Pickups this week</small>
+          <strong id="statPickups">0</strong>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="dash-section" id="enquiries">
+    <div class="container">
+
+      <div class="section-head">
+        <div>
+          <h2>Your enquiries</h2>
+        </div>
+      </div>
+
+      <div class="enquiry-list">
+
+        <div class="enquiry-row">
+          <span class="avatar">KS</span>
+          <div class="enquiry-info">
+            <strong>Maths and stats tutoring</strong>
+            <span>Kabelo S. · <span class="verified">Hub verified</span></span>
+          </div>
+          <a href="listing.html" class="enquiry-link">View</a>
+        </div>
+
+        <div class="enquiry-row">
+          <span class="avatar">TM</span>
+          <div class="enquiry-info">
+            <strong>Handmade soy candle set</strong>
+            <span>Thando M. · <span class="verified">Hub verified</span></span>
+          </div>
+          <a href="listing.html" class="enquiry-link">View</a>
+        </div>
+
+        <div class="enquiry-row">
+          <span class="avatar">LN</span>
+          <div class="enquiry-info">
+            <strong>Headshots for your CV and LinkedIn</strong>
+            <span>Lerato N. · <span class="verified">Hub verified</span></span>
+          </div>
+          <a href="listing.html" class="enquiry-link">View</a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section class="dash-section" id="featured">
+    <div class="container">
+
+      <div class="section-head">
+        <div>
+          <h2>Just listed on the Hub</h2>
+        </div>
+        <a href="browse.html" class="link-arrow">See all listings →</a>
+      </div>
+
+      <div class="card-grid feature-grid">
+
+        <article class="listing-card lead">
+          <div class="listing-img ph-1">
+            <span class="tag">Service</span>
+            <span class="rating">★ 4.9</span>
+          </div>
+          <div class="listing-body">
+            <div class="seller row">
+              <span class="avatar">LN</span>
+              <span>Lerato N. · <span class="verified">Hub verified</span></span>
+            </div>
+            <h3>Headshots for your CV and LinkedIn</h3>
+            <p>A quick 30-minute shoot on campus. You get 5 edited photos.</p>
+            <div class="listing-footer">
+              <div class="price">
+                <small>From</small>
+                <strong>R150</strong><span>/session</span>
+              </div>
+              <a href="listing.html" class="btn btn-indigo btn-sm">Book slot</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="listing-card">
+          <div class="listing-img ph-2">
+            <span class="tag tag-mint">Product</span>
+            <span class="rating">★ 4.8</span>
+          </div>
+          <div class="listing-body">
+            <div class="seller row">
+              <span class="avatar">TM</span>
+              <span>Thando M. · <span class="verified">Hub verified</span></span>
+            </div>
+            <h3>Handmade soy candle set</h3>
+            <p>Three scented candles, poured by hand. Pick them up at the Hub.</p>
+            <div class="listing-footer">
+              <div class="price">
+                <small>Price</small>
+                <strong>R120</strong><span>/set</span>
+              </div>
+              <a href="listing.html" class="btn btn-indigo btn-sm">View</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="listing-card">
+          <div class="listing-img ph-3">
+            <span class="tag">Service</span>
+            <span class="rating">★ 5.0</span>
+          </div>
+          <div class="listing-body">
+            <div class="seller row">
+              <span class="avatar">KS</span>
+              <span>Kabelo S. · <span class="verified">Hub verified</span></span>
+            </div>
+            <h3>Maths and stats tutoring</h3>
+            <p>One-on-one help with first and second year modules, on campus or online.</p>
+            <div class="listing-footer">
+              <div class="price">
+                <small>From</small>
+                <strong>R80</strong><span>/hour</span>
+              </div>
+              <a href="listing.html" class="btn btn-indigo btn-sm">Book slot</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section class="dash-section" id="sell">
+    <div class="container">
+      <div class="seller-banner" id="sellerBanner">
+        <div>
+          <h2>Got something to sell?</h2>
+          <p>Register as a seller and list your products or services for other students on the Hub.</p>
+        </div>
+        <a href="become-seller.html" class="btn btn-mint">Become a seller</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+
+    <div class="footer-grid">
+      <div>
+        <a href="home.html" class="logo">
+          <span class="logo-mark">HM</span>
+          <span>Hub Market</span>
+        </a>
+        <p>The campus marketplace connecting Eduvos Incubation Hub entrepreneurs with the student community.</p>
+      </div>
+
+      <div>
+        <h4>Marketplace</h4>
+        <ul>
+          <li><a href="browse.html">Browse all</a></li>
+          <li><a href="browse.html?type=product">Products</a></li>
+          <li><a href="browse.html?type=service">Services</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Sellers</h4>
+        <ul>
+          <li><a href="become-seller.html">Become a seller</a></li>
+          <li><a href="#featured">New listings</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Safety tips</a></li>
+          <li><a href="#">Report a listing</a></li>
+          <li><a href="#">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Hub Market · Eduvos Incubation Hub · Hack Jam 2026</span>
+      <span>Terms · Privacy</span>
+    </div>
+
+  </div>
+</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/session.js"></script>
+
+  <script>
+    (async function () {
+      const user = await getCurrentUser();
+      if (!user) return;
+
+      const meta = user.user_metadata || {};
+      const first = meta.first_name || user.email.split("@")[0];
+      const last = meta.last_name || "";
+
+      document.getElementById("userName").textContent = first;
+      document.getElementById("headerName").textContent = first;
+      document.getElementById("userAvatar").textContent =
+        (first[0] + (last[0] || "")).toUpperCase();
+
+      if (meta.campus) {
+        document.getElementById("campusName").textContent = meta.campus + " campus";
+        document.getElementById("campusPill").classList.add("show");
+      }
+
+      if (meta.role === "seller") {
+        document.getElementById("sellerBanner").style.display = "none";
+      }
+    })();
+
+    document.getElementById("logoutBtn").addEventListener("click", logout);
+  </script>
 </body>
 </html>
