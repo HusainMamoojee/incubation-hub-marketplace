@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/auth.css">
 </head>
 
 <body class="home-page" data-protected>
@@ -65,7 +66,7 @@
         </form>
       </div>
 
-        <div class="stat-cards">
+      <div class="stat-cards">
         <div class="stat-card">
           <small>Enquiries sent</small>
           <strong id="statEnquiries">–</strong>
@@ -97,9 +98,7 @@
       </div>
 
       <div class="enquiry-list" id="enquiryList">
-         <p class="empty-state">Loading your enquiries...</p>
-
-
+        <p class="empty-state">Loading your enquiries...</p>
       </div>
 
     </div>
@@ -116,8 +115,8 @@
       </div>
 
       <div class="card-grid feature-grid" id="justListed">
-         <p class="empty-state">Loading the latest listings...</p>
-        </div>
+        <p class="empty-state">Loading the latest listings...</p>
+      </div>
 
     </div>
   </section>
@@ -131,6 +130,84 @@
         </div>
         <a href="become-seller.html" class="btn btn-mint">Become a seller</a>
       </div>
+    </div>
+  </section>
+
+  <section class="dash-section" id="myShop" hidden>
+    <div class="container">
+
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Your shop</span>
+          <h2 id="shopTitle">My shop</h2>
+          <p><span class="verified">✓ Hub-verified seller</span></p>
+        </div>
+        <button type="button" class="btn btn-indigo" id="openAddListing">+ Add listing</button>
+      </div>
+
+      <form class="auth-form shop-form" id="addListingForm" hidden novalidate>
+
+        <div class="form-message" id="listingMessage" role="status"></div>
+
+        <div class="field">
+          <label for="listingTitle">Title</label>
+          <input type="text" id="listingTitle" maxlength="80" placeholder="e.g. Java and Python tutoring">
+          <span class="field-error"></span>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="listingType">Type</label>
+            <select id="listingType">
+              <option value="product">Product</option>
+              <option value="service">Service</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="listingCategory">Category</label>
+            <select id="listingCategory">
+              <option value="">Choose a category</option>
+              <option>Food &amp; snacks</option>
+              <option>Fashion</option>
+              <option>Tutoring</option>
+              <option>Photography</option>
+              <option>Design</option>
+              <option>Tech help</option>
+              <option>Other</option>
+            </select>
+            <span class="field-error"></span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="listingPrice">Price (R)</label>
+            <input type="number" id="listingPrice" min="0" step="0.01" placeholder="e.g. 120">
+            <span class="field-error"></span>
+          </div>
+          <div class="field">
+            <label for="listingUnit">Per (optional)</label>
+            <input type="text" id="listingUnit" maxlength="20" placeholder="e.g. hr, session">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="listingDescription">Description</label>
+          <textarea id="listingDescription" rows="3" maxlength="500" placeholder="What's included, where to collect, when you're available..."></textarea>
+        </div>
+
+        <div class="shop-form-actions">
+          <button type="button" class="btn btn-ghost" id="cancelAddListing">Cancel</button>
+          <button type="submit" class="btn btn-mint">Publish listing</button>
+        </div>
+      </form>
+
+      <h3 class="shop-subhead">Your listings</h3>
+      <div class="form-message" id="shopMessage" role="status"></div>
+      <div class="enquiry-list" id="myListings">
+        <p class="empty-state">Loading your listings...</p>
+      </div>
+
     </div>
   </section>
 
@@ -187,6 +264,8 @@
   <script src="js/supabase.js"></script>
   <script src="js/session.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/seller.js"></script>
   <script src="js/home.js"></script>
 </body>
 </html>
