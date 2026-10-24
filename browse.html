@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse | Hub Market</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/browse.css">
+</head>
+<body class="browse-page">
+
+<header class="site-header">
+  <nav class="container nav">
+
+    <a href="index.html" class="logo">
+      <span class="logo-mark">HM</span>
+      <span>Hub Market<small>EDUVOS INCUBATION HUB</small></span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="browse.html" class="active">Browse</a></li>
+      <li><a href="index.html#how-it-works">How it works</a></li>
+      <li><a href="index.html#featured">Featured</a></li>
+      <li><a href="index.html#hub">Incubation Hub</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="register.html" class="btn btn-mint btn-sm">Start selling</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+
+  </nav>
+</header>
+
+<main>
+
+  <section class="browse-hero">
+    <div class="container">
+
+      <h1>Browse the <span>marketplace</span></h1>
+      <p class="lead">Discover student businesses, shop their products and book their services.</p>
+
+      <form class="browse-search" id="searchForm" action="browse.html" method="get">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input
+          type="search"
+          name="q"
+          id="searchInput"
+          placeholder="What are you looking for today?"
+          aria-label="Search the marketplace">
+        <button type="submit" class="search-go" aria-label="Search">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+
+      <div class="chips quick-picks">
+        <span class="label">TRY</span>
+        <button class="chip" type="button">Tutoring</button>
+        <button class="chip" type="button">Food &amp; snacks</button>
+        <button class="chip" type="button">Fashion</button>
+        <button class="chip" type="button">Photography</button>
+        <button class="chip" type="button">Design</button>
+        <button class="chip" type="button">Tech help</button>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="browse-section">
+    <div class="container">
+
+      <div class="filter-bar">
+
+        <div class="type-tabs" id="typeTabs" role="group" aria-label="Filter by type">
+          <button type="button" class="tab active" data-type="all">All</button>
+          <button type="button" class="tab" data-type="product">Products</button>
+          <button type="button" class="tab" data-type="service">Services</button>
+        </div>
+
+        <div class="filters">
+          <select class="filter-select" id="categoryFilter" aria-label="Filter by category">
+            <option value="">All categories</option>
+            <option>Food &amp; snacks</option>
+            <option>Fashion</option>
+            <option>Tutoring</option>
+            <option>Photography</option>
+            <option>Design</option>
+            <option>Tech help</option>
+            <option>Other</option>
+          </select>
+
+          <select class="filter-select" id="campusFilter" aria-label="Filter by campus">
+            <option value="">All campuses</option>
+            <option>Bedfordview</option>
+            <option>Midrand</option>
+            <option>Pretoria</option>
+            <option>Durban</option>
+            <option>Cape Town</option>
+            <option>Tygervalley</option>
+          </select>
+
+          <select class="filter-select" id="sortFilter" aria-label="Sort listings">
+            <option value="newest">Newest first</option>
+            <option value="price-low">Price: low to high</option>
+            <option value="price-high">Price: high to low</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="results-bar">
+        <span class="results-count" id="resultsCount" aria-live="polite"></span>
+        <button type="button" class="clear-filters" id="clearFilters" hidden>Clear filters</button>
+      </div>
+
+      <div class="card-grid" id="listingGrid">
+        <p class="empty-state">Loading listings...</p>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="logo">
+          <span class="logo-mark">HM</span>
+          <span>Hub Market</span>
+        </a>
+        <p>The campus marketplace connecting Eduvos Incubation Hub entrepreneurs with the student community.</p>
+      </div>
+
+      <div>
+        <h4>Marketplace</h4>
+        <ul>
+          <li><a href="browse.html">Browse all</a></li>
+          <li><a href="browse.html?type=product">Products</a></li>
+          <li><a href="browse.html?type=service">Services</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Sellers</h4>
+        <ul>
+          <li><a href="register.html">Start selling</a></li>
+          <li><a href="index.html#how-it-works">How it works</a></li>
+          <li><a href="index.html#hub">Incubation Hub</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Safety tips</a></li>
+          <li><a href="#">Report a listing</a></li>
+          <li><a href="#">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Hub Market · Eduvos Incubation Hub · Hack Jam 2026</span>
+      <span>Terms · Privacy</span>
+    </div>
+
+  </div>
+</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/browse.js"></script>
+</body>
+</html>
