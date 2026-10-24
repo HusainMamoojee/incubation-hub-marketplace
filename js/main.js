@@ -32,3 +32,24 @@ if (menuToggle && navLinks) {
     menuToggle.textContent = isOpen ? "✕" : "☰";
   });
 }
+
+
+// ---------- Shared helpers (used by home, browse, listing pages) ----------
+
+// Make user-typed text safe to put inside HTML
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text ?? "";
+  return div.innerHTML;
+}
+
+// 150 → "R150", 85.5 → "R85.50"
+function formatPrice(price) {
+  const amount = Number(price);
+  return "R" + (Number.isInteger(amount) ? amount : amount.toFixed(2));
+}
+
+// "Husain", "Mamoojee" → "HM"
+function initials(first, last) {
+  return ((first || "").charAt(0) + (last || "").charAt(0)).toUpperCase() || "?";
+}

@@ -65,22 +65,22 @@
         </form>
       </div>
 
-      <div class="stat-cards">
+        <div class="stat-cards">
         <div class="stat-card">
           <small>Enquiries sent</small>
-          <strong id="statEnquiries">3</strong>
+          <strong id="statEnquiries">–</strong>
         </div>
         <div class="stat-card">
-          <small>Saved listings</small>
-          <strong id="statSaved">0</strong>
+          <small>Replies received</small>
+          <strong id="statReplies">–</strong>
         </div>
         <div class="stat-card">
-          <small>Bookings</small>
-          <strong id="statBookings">0</strong>
+          <small>Listings on the Hub</small>
+          <strong id="statListings">–</strong>
         </div>
         <div class="stat-card">
-          <small>Pickups this week</small>
-          <strong id="statPickups">0</strong>
+          <small>Hub-verified sellers</small>
+          <strong id="statSellers">–</strong>
         </div>
       </div>
 
@@ -96,34 +96,9 @@
         </div>
       </div>
 
-      <div class="enquiry-list">
+      <div class="enquiry-list" id="enquiryList">
+         <p class="empty-state">Loading your enquiries...</p>
 
-        <div class="enquiry-row">
-          <span class="avatar">KS</span>
-          <div class="enquiry-info">
-            <strong>Maths and stats tutoring</strong>
-            <span>Kabelo S.</span>
-          </div>
-          <a href="listing.html" class="enquiry-link">View</a>
-        </div>
-
-        <div class="enquiry-row">
-          <span class="avatar">TM</span>
-          <div class="enquiry-info">
-            <strong>Handmade soy candle set</strong>
-            <span>Thando M.</span>
-          </div>
-          <a href="listing.html" class="enquiry-link">View</a>
-        </div>
-
-        <div class="enquiry-row">
-          <span class="avatar">LN</span>
-          <div class="enquiry-info">
-            <strong>Headshots for your CV and LinkedIn</strong>
-            <span>Lerato N.</span>
-          </div>
-          <a href="listing.html" class="enquiry-link">View</a>
-        </div>
 
       </div>
 
@@ -140,75 +115,9 @@
         <a href="browse.html" class="link-arrow">See all listings →</a>
       </div>
 
-      <div class="card-grid feature-grid">
-
-        <article class="listing-card lead">
-          <div class="listing-img ph-1">
-            <span class="tag">Service</span>
-            <span class="rating">★ 4.9</span>
-          </div>
-          <div class="listing-body">
-            <div class="seller row">
-              <span class="avatar">LN</span>
-              <span>Lerato N.</span>
-            </div>
-            <h3>Headshots for your CV and LinkedIn</h3>
-            <p>A quick 30-minute shoot on campus. You get 5 edited photos.</p>
-            <div class="listing-footer">
-              <div class="price">
-                <small>From</small>
-                <strong>R150</strong><span>/session</span>
-              </div>
-              <a href="listing.html" class="btn btn-indigo btn-sm">Book slot</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="listing-card">
-          <div class="listing-img ph-2">
-            <span class="tag tag-mint">Product</span>
-            <span class="rating">★ 4.8</span>
-          </div>
-          <div class="listing-body">
-            <div class="seller row">
-              <span class="avatar">TM</span>
-              <span>Thando M.</span>
-            </div>
-            <h3>Handmade soy candle set</h3>
-            <p>Three scented candles, poured by hand. Pick them up at the Hub.</p>
-            <div class="listing-footer">
-              <div class="price">
-                <small>Price</small>
-                <strong>R120</strong><span>/set</span>
-              </div>
-              <a href="listing.html" class="btn btn-indigo btn-sm">View</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="listing-card">
-          <div class="listing-img ph-3">
-            <span class="tag">Service</span>
-            <span class="rating">★ 5.0</span>
-          </div>
-          <div class="listing-body">
-            <div class="seller row">
-              <span class="avatar">KS</span>
-              <span>Kabelo S.</span>
-            </div>
-            <h3>Maths and stats tutoring</h3>
-            <p>One-on-one help with first and second year modules, on campus or online.</p>
-            <div class="listing-footer">
-              <div class="price">
-                <small>From</small>
-                <strong>R80</strong><span>/hour</span>
-              </div>
-              <a href="listing.html" class="btn btn-indigo btn-sm">Book slot</a>
-            </div>
-          </div>
-        </article>
-
-      </div>
+      <div class="card-grid feature-grid" id="justListed">
+         <p class="empty-state">Loading the latest listings...</p>
+        </div>
 
     </div>
   </section>

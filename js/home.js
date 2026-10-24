@@ -1,24 +1,215 @@
- (async function () {
-      const user = await getCurrentUser();
-      if (!user) return;
+// Home dashboard: everything on this page comes from Supabase
 
-      const meta = user.user_metadata || {};
-      const first = meta.first_name || user.email.split("@")[0];
-      const last = meta.last_name || "";
+// ---------- Run when the page loads ----------
+(async function () {
+  const user = await getCurrentUser();
+  if (!user) return;
 
-      document.getElementById("userName").textContent = first;
-      document.getElementById("headerName").textContent = first;
-      document.getElementById("userAvatar").textContent =
-        (first[0] + (last[0] || "")).toUpperCase();
+  const profile = await loadProfile(user);
+  showSellerBanner(profile);
 
-      if (meta.campus) {
-        document.getElementById("campusName").textContent = meta.campus + " campus";
-        document.getElementById("campusPill").classList.add("show");
-      }
+  // These three don't depend on each other, so load them at the same time
+  await Promise.all([
+    loadStats(user),
+    loadEnquiries(user),
+    loadJustListed()
+  ]);
+})();
 
-      if (meta.role === "seller") {
-        document.getElementById("sellerBanner").style.display = "none";
-      }
-    })();
+// ---------- 1. Name, initials, campus ----------
+async function loadProfile(user) {
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("first_name, last_name, campus, seller_status")
+    .eq("id", user.id)
+    .single();
 
-    document.getElementById("logoutBtn").addEventListener("click", logout);
+  if (error) {
+    console.error("Could not load profile:", error.message);
+    return null;
+  }
+
+  const first = profile.first_name || user.email.split("@")[0];
+
+  document.getElementById("userName").textContent = first;
+  document.getElementById("headerName").textContent = first;
+  document.getElementById("userAvatar").textContent = initials(profile.first_name, profile.last_name);
+
+  if (profile.campus) {
+    document.getElementById("campusName").textContent = profile.campus + " campus";
+    document.getElementById("campusPill").classList.add("show");
+  }
+
+  return profile;
+}
+
+// ---------- 2. Seller banner ----------
+function showSellerBanner(profile) {
+  const banner = document.getElementById("sellerBanner");
+  if (!banner || !profile) return;
+
+  if (profile.seller_status === "approved") {
+    banner.style.display = "none";
+  } else if (profile.seller_status === "pending") {
+    banner.querySelector("h2").textContent = "Your shop is under review";
+    banner.querySelector("p").textContent = "The Incubation Hub is checking your application. You'll be able to add listings once you're approved.";
+    banner.querySelector("a").style.display = "none";
+  }
+}
+
+// ---------- 3. Stats ----------
+async function countRows(query) {
+  const { count, error } = await query;
+  if (error) {
+    console.error("Count failed:", error.message);
+    return 0;
+  }
+  return count ?? 0;
+}
+
+async function loadStats(user) {
+  const [sent, replies, listings, sellers] = await Promise.all([
+    countRows(
+      supabaseClient.from("enquiries").select("*", { count: "exact", head: true })
+        .eq("buyer_id", user.id)
+    ),
+    countRows(
+      supabaseClient.from("enquiries").select("*", { count: "exact", head: true })
+        .eq("buyer_id", user.id)
+        .eq("status", "replied")
+    ),
+    countRows(
+      supabaseClient.from("listings").select("*", { count: "exact", head: true })
+        .eq("status", "active")
+    ),
+    countRows(
+      supabaseClient.from("profiles").select("*", { count: "exact", head: true })
+        .eq("seller_status", "approved")
+    )
+  ]);
+
+  document.getElementById("statEnquiries").textContent = sent;
+  document.getElementById("statReplies").textContent = replies;
+  document.getElementById("statListings").textContent = listings;
+  document.getElementById("statSellers").textContent = sellers;
+}
+
+// ---------- 4. Your enquiries ----------
+const STATUS_LABELS = {
+  new: "Awaiting reply",
+  replied: "Replied",
+  confirmed: "Confirmed",
+  closed: "Closed"
+};
+
+async function loadEnquiries(user) {
+  const list = document.getElementById("enquiryList");
+
+  const { data: enquiries, error } = await supabaseClient
+    .from("enquiries")
+    .select(`
+      id,
+      status,
+      listing:listings ( id, title ),
+      seller:profiles!enquiries_seller_id_fkey ( first_name, last_name )
+    `)
+    .eq("buyer_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  if (error) {
+    list.innerHTML = `<p class="empty-state">We couldn't load your enquiries. Please refresh the page.</p>`;
+    console.error("Could not load enquiries:", error.message);
+    return;
+  }
+
+  if (enquiries.length === 0) {
+    list.innerHTML = `
+      <p class="empty-state">
+        You haven't sent any enquiries yet.
+        <a href="browse.html">Browse the marketplace</a> to find something you like.
+      </p>`;
+    return;
+  }
+
+  list.innerHTML = enquiries.map((enquiry) => {
+    const title = enquiry.listing ? enquiry.listing.title : "Listing no longer available";
+    const seller = enquiry.seller || {};
+    const sellerName = `${seller.first_name || "Seller"} ${(seller.last_name || "").charAt(0)}.`;
+    const link = enquiry.listing ? `listing.html?id=${enquiry.listing.id}` : "browse.html";
+
+    return `
+      <div class="enquiry-row">
+        <span class="avatar">${escapeHtml(initials(seller.first_name, seller.last_name))}</span>
+        <div class="enquiry-info">
+          <strong>${escapeHtml(title)}</strong>
+          <span>${escapeHtml(sellerName)}</span>
+        </div>
+        <span class="status-pill status-${enquiry.status}">${STATUS_LABELS[enquiry.status]}</span>
+        <a href="${link}" class="enquiry-link">View</a>
+      </div>`;
+  }).join("");
+}
+
+// ---------- 5. Just listed on the Hub ----------
+async function loadJustListed() {
+  const grid = document.getElementById("justListed");
+
+  const { data: listings, error } = await supabaseClient
+    .from("listings")
+    .select(`
+      id, title, description, type, price, price_unit,
+      seller:profiles ( first_name, last_name )
+    `)
+    .eq("status", "active")
+    .order("created_at", { ascending: false })
+    .limit(3);
+
+  if (error) {
+    grid.innerHTML = `<p class="empty-state">We couldn't load listings. Please refresh the page.</p>`;
+    console.error("Could not load listings:", error.message);
+    return;
+  }
+
+  if (listings.length === 0) {
+    grid.innerHTML = `<p class="empty-state">No listings yet. Check back soon!</p>`;
+    return;
+  }
+
+  grid.innerHTML = listings.map((listing, index) => renderListingCard(listing, index)).join("");
+}
+
+function renderListingCard(listing, index) {
+  const seller = listing.seller || {};
+  const isService = listing.type === "service";
+  const sellerName = `${seller.first_name || "Seller"} ${(seller.last_name || "").charAt(0)}.`;
+
+  return `
+    <article class="listing-card${index === 0 ? " lead" : ""}">
+      <div class="listing-img ph-${(index % 3) + 1}">
+        <span class="tag${isService ? "" : " tag-mint"}">${isService ? "Service" : "Product"}</span>
+      </div>
+      <div class="listing-body">
+        <div class="seller row">
+          <span class="avatar">${escapeHtml(initials(seller.first_name, seller.last_name))}</span>
+          <span>${escapeHtml(sellerName)} · <span class="verified">Hub verified</span></span>
+        </div>
+        <h3>${escapeHtml(listing.title)}</h3>
+        <p>${escapeHtml(listing.description)}</p>
+        <div class="listing-footer">
+          <div class="price">
+            <small>${isService ? "From" : "Price"}</small>
+            <strong>${formatPrice(listing.price)}</strong>${listing.price_unit ? `<span>/${escapeHtml(listing.price_unit)}</span>` : ""}
+          </div>
+          <a href="listing.html?id=${listing.id}" class="btn btn-indigo btn-sm">${isService ? "Book slot" : "View"}</a>
+        </div>
+      </div>
+    </article>`;
+}
+
+// ---------- Log out ----------
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", logout);
+}
