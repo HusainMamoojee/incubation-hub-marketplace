@@ -136,67 +136,11 @@
   </div>
 </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script src="js/supabase.js"></script>
-  <script src="js/main.js"></script>
   <script src="js/session.js"></script>
+  <script src="js/main.js"></script>
   <script src="js/auth.js"></script>
-
-  <script>
-    const sellerForm = document.getElementById("sellerForm");
-
-    sellerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      clearErrors(sellerForm);
-
-      const shopName = document.getElementById("shopName");
-      const category = document.getElementById("category");
-      const description = document.getElementById("description");
-      const terms = document.getElementById("terms");
-      const box = document.getElementById("formMessage");
-      let valid = true;
-
-      if (shopName.value.trim() === "") {
-        setError(shopName, "Enter a name for your shop.");
-        valid = false;
-      }
-      if (category.value === "") {
-        setError(category, "Choose a category.");
-        valid = false;
-      }
-      if (description.value.trim() === "") {
-        setError(description, "Tell us what you'll be selling.");
-        valid = false;
-      }
-      if (!terms.checked) {
-        setError(terms, "Please accept the guidelines to continue.");
-        valid = false;
-      }
-      if (!valid) return;
-
-      const submitBtn = sellerForm.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Setting up your shop...";
-
-      const { error } = await supabaseClient.auth.updateUser({
-        data: {
-          role: "seller",
-          shop_name: shopName.value.trim(),
-          shop_category: category.value,
-          shop_description: description.value.trim()
-        }
-      });
-
-      if (error) {
-        showMessage(box, error.message, "error");
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Become a seller";
-        return;
-      }
-
-      showMessage(box, "You're now a seller! Taking you back home...", "success");
-      setTimeout(() => { window.location.href = HOME_PAGE; }, 1200);
-    });
-  </script>
+  <script src="js/become-seller.js"></script>
 </body>
 </html>
