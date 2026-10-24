@@ -9,18 +9,25 @@
   showSellerBanner(profile);
 
   // These three don't depend on each other, so load them at the same time
-  await Promise.all([
+   const tasks = [
     loadStats(user),
     loadEnquiries(user),
     loadJustListed()
-  ]);
+  ];
+
+  // Approved sellers also get their shop
+  if (profile && profile.seller_status === "approved") {
+    tasks.push(loadShop(user, profile));
+  }
+
+  await Promise.all(tasks);
 })();
 
 // ---------- 1. Name, initials, campus ----------
 async function loadProfile(user) {
   const { data: profile, error } = await supabaseClient
     .from("profiles")
-    .select("first_name, last_name, campus, seller_status")
+    .select("first_name, last_name, campus, seller_status,shop_name")
     .eq("id", user.id)
     .single();
 

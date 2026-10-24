@@ -230,3 +230,56 @@
   color: var(--indigo);
   font-weight: 600;
 }
+
+
+/* ---------- Make the hidden attribute always win ---------- */
+[hidden] { display: none !important; }
+
+/* ---------- Seller shop ---------- */
+.shop-form {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.field input[type="number"],
+.field textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font: inherit;
+  outline: none;
+}
+.field textarea { resize: vertical; }
+.field input[type="number"]:focus,
+.field textarea:focus {
+  border-color: var(--indigo);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.shop-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.shop-subhead {
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+}
+
+.listing-status {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--white);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
