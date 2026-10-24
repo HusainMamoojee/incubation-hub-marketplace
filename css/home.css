@@ -283,3 +283,71 @@
   font-size: 0.85rem;
   cursor: pointer;
 }
+
+/* ---------- Seller inbox ---------- */
+.enquiry-list + .shop-subhead { margin-top: 36px; }
+
+.inbox-item { padding: 18px 20px; }
+.inbox-item + .inbox-item { border-top: 1px solid var(--border); }
+
+.inbox-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.inbox-head .enquiry-info { flex: 1; }
+
+.inbox-message {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.inbox-reply {
+  margin-top: 10px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.reply-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  align-items: flex-start;
+}
+.reply-form textarea {
+  flex: 1;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font: inherit;
+  resize: vertical;
+  outline: none;
+}
+.reply-form textarea:focus {
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.inbox-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* Seller's reply shown to the buyer in "Your enquiries" */
+.enquiry-reply {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.82rem;
+  color: var(--indigo);
+}
+
+@media (max-width: 760px) {
+  .reply-form { flex-direction: column; }
+  .reply-form .btn { width: 100%; }
+}
