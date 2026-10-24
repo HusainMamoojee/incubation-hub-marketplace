@@ -114,9 +114,10 @@ async function loadEnquiries(user) {
 
   const { data: enquiries, error } = await supabaseClient
     .from("enquiries")
-    .select(`
+     .select(`
       id,
       status,
+      seller_reply,
       listing:listings ( id, title ),
       seller:profiles!enquiries_seller_id_fkey ( first_name, last_name )
     `)
@@ -148,9 +149,10 @@ async function loadEnquiries(user) {
     return `
       <div class="enquiry-row">
         <span class="avatar">${escapeHtml(initials(seller.first_name, seller.last_name))}</span>
-        <div class="enquiry-info">
+       <div class="enquiry-info">
           <strong>${escapeHtml(title)}</strong>
           <span>${escapeHtml(sellerName)}</span>
+          ${enquiry.seller_reply ? `<span class="enquiry-reply">💬 ${escapeHtml(enquiry.seller_reply)}</span>` : ""}
         </div>
         <span class="status-pill status-${enquiry.status}">${STATUS_LABELS[enquiry.status]}</span>
         <a href="${link}" class="enquiry-link">View</a>
