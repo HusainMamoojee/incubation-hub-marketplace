@@ -81,6 +81,35 @@
                 <strong id="listingPrice"></strong><span id="listingUnit"></span>
               </div>
             </div>
+                        <!-- Buy button -->
+            <div class="buy-box" id="buyBox">
+              <button type="button" class="btn btn-mint btn-block" id="buyBtn">Buy now</button>
+              <p class="escrow-note">🔒 Escrow protected: the seller only gets paid once you confirm you've received it.</p>
+            </div>
+
+            <!-- Checkout panel (opens after clicking Buy) -->
+            <div class="checkout" id="checkoutPanel" hidden>
+              <h3>Checkout</h3>
+
+              <div class="checkout-row">
+                <span id="checkoutItem"></span>
+                <strong id="checkoutAmount"></strong>
+              </div>
+
+              <div class="field">
+                <label for="orderNote">Note for the seller (optional)</label>
+                <textarea id="orderNote" rows="2" maxlength="300" placeholder="e.g. Can we meet at the Hub on Thursday?"></textarea>
+              </div>
+
+              <div class="form-message" id="checkoutMessage" role="status"></div>
+
+              <button type="button" class="btn btn-indigo btn-block" id="placeOrderBtn">Place order</button>
+              <button type="button" class="btn btn-mint btn-block" id="payBtn" hidden>Pay into escrow (demo)</button>
+              <a href="home.html#orders" class="btn btn-indigo btn-block" id="viewOrderBtn" hidden>View my orders</a>
+              <button type="button" class="btn btn-ghost btn-block" id="cancelCheckoutBtn">Cancel</button>
+
+              <p class="demo-note">Demo mode: no real money is taken. In production, payments are held by TradeSafe escrow.</p>
+            </div>
 
             <div class="seller-box">
               <span class="avatar" id="sellerAvatar"></span>
@@ -95,7 +124,7 @@
               <div class="form-message" id="formMessage" role="status"></div>
 
               <div class="field">
-                <label for="enquiryMessage">Message the seller</label>
+                                <label for="enquiryMessage">Got a question first? Message the seller</label>
                 <textarea id="enquiryMessage" rows="4" maxlength="1000" placeholder="Hi! Is this still available? When could we meet on campus?"></textarea>
                 <span class="field-error"></span>
               </div>
