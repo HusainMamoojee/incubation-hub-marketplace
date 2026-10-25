@@ -53,3 +53,13 @@ function formatPrice(price) {
 function initials(first, last) {
   return ((first || "").charAt(0) + (last || "").charAt(0)).toUpperCase() || "?";
 }
+
+// (I) Zeke moved the const status lables to the main js.
+
+const STATUS_LABELS = {
+  new: "Awaiting reply",
+  replied: "Replied",
+  confirmed: "Confirmed",
+  closed: "Closed"
+  
+};

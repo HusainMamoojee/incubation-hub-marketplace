@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller dashboard | Hub Market</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+
+<body class="home-page" data-protected>
+
+<header class="site-header">
+  <nav class="container nav">
+
+    <a href="home.html" class="logo">
+      <span class="logo-mark">HM</span>
+      <span>Hub Market<small>EDUVOS INCUBATION HUB</small></span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="browse.html">Browse</a></li>
+      <li><a href="dashboard.html">Seller dashboard</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <div class="nav-user">
+        <span class="avatar" id="userAvatar">HM</span>
+        <span class="user-name" id="headerName"></span>
+      </div>
+      <button type="button" class="btn btn-sm logout-btn" id="logoutBtn">Log out</button>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+
+  </nav>
+</header>
+
+<main>
+
+  <section class="dash-hero">
+    <div class="container">
+      <div class="dash-top">
+        <div class="dash-title">
+          <h1 id="shopTitle">My shop</h1>
+          <span class="verified">✓ Hub-verified seller</span>
+        </div>
+      </div>
+      <!-- seller stat cards go here -->
+    </div>
+  </section>
+
+  <section class="dash-section" id="myShop">
+    <div class="container">
+
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Your shop</span>
+          <h2>Your listings</h2>
+        </div>
+        <button type="button" class="btn btn-indigo" id="openAddListing">+ Add listing</button>
+      </div>
+
+      <form class="auth-form shop-form" id="addListingForm" hidden novalidate>
+
+        <div class="form-message" id="listingMessage" role="status"></div>
+
+        <div class="field">
+          <label for="listingTitle">Title</label>
+          <input type="text" id="listingTitle" maxlength="80" placeholder="e.g. Java and Python tutoring">
+          <span class="field-error"></span>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="listingType">Type</label>
+            <select id="listingType">
+              <option value="product">Product</option>
+              <option value="service">Service</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="listingCategory">Category</label>
+            <select id="listingCategory">
+              <option value="">Choose a category</option>
+              <option>Food &amp; snacks</option>
+              <option>Fashion</option>
+              <option>Tutoring</option>
+              <option>Photography</option>
+              <option>Design</option>
+              <option>Tech help</option>
+              <option>Other</option>
+            </select>
+            <span class="field-error"></span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="listingPrice">Price (R)</label>
+            <input type="number" id="listingPrice" min="0" step="0.01" placeholder="e.g. 120">
+            <span class="field-error"></span>
+          </div>
+          <div class="field">
+            <label for="listingUnit">Per (optional)</label>
+            <input type="text" id="listingUnit" maxlength="20" placeholder="e.g. hr, session">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="listingDescription">Description</label>
+          <textarea id="listingDescription" rows="3" maxlength="500" placeholder="What's included, where to collect, when you're available..."></textarea>
+        </div>
+
+        <div class="shop-form-actions">
+          <button type="button" class="btn btn-ghost" id="cancelAddListing">Cancel</button>
+          <button type="submit" class="btn btn-mint">Publish listing</button>
+        </div>
+      </form>
+
+      <div class="form-message" id="shopMessage" role="status"></div>
+      <div class="enquiry-list" id="myListings">
+        <p class="empty-state">Loading your listings...</p>
+      </div>
+
+      <h3 class="shop-subhead">Incoming enquiries</h3>
+      <div class="form-message" id="inboxMessage" role="status"></div>
+      <div class="enquiry-list" id="incomingEnquiries">
+        <p class="empty-state">Loading enquiries...</p>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Hub Market · Eduvos Incubation Hub · Hack Jam 2026</span>
+      <span>Terms · Privacy</span>
+    </div>
+  </div>
+</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/seller.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
+
+
+

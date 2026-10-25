@@ -294,9 +294,12 @@ function setupInboxActions(user) {
   });
 }
 
-// ---------- Reload everything that shows listings ----------
+// Reload everything that shows listings 
 function refreshDashboard(user) {
+
   loadMyListings(user);
-  loadJustListed();
-  loadStats(user);
+
+  if(typeof loadJustListed === "function") loadJustListed();
+  if(typeof loadStats === "function") loadStats(user);
+  
 }
