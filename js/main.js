@@ -75,3 +75,14 @@ const ORDER_STATUS_LABELS = {
   refunded: "Refunded",
   cancelled: "Cancelled"
 };
+
+// ---------- Header: add a shadow once the page scrolls ----------
+const siteHeader = document.querySelector(".site-header");
+
+if (siteHeader) {
+  const updateHeaderShadow = () => {
+    siteHeader.classList.toggle("scrolled", window.scrollY > 8);
+  };
+  updateHeaderShadow();
+  window.addEventListener("scroll", updateHeaderShadow, { passive: true });
+}

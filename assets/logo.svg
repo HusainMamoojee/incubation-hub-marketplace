@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="Hub Market">
+  <defs>
+    <linearGradient id="hm-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect width="40" height="40" rx="11" fill="url(#hm-bg)"/>
+  <!-- Market-stall awning -->
+  <path d="M8 9.5h24v3.5a4 4 0 0 1-8 0 4 4 0 0 1-8 0 4 4 0 0 1-8 0z" fill="#FFFFFF"/>
+  <!-- Stall posts: the two legs of the H -->
+  <rect x="10" y="18" width="4" height="13" rx="1.6" fill="#FFFFFF"/>
+  <rect x="26" y="18" width="4" height="13" rx="1.6" fill="#FFFFFF"/>
+  <!-- The counter: the crossbar of the H -->
+  <rect x="10" y="22.5" width="20" height="4" rx="1.6" fill="#6EE7B7"/>
+</svg>
