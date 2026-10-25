@@ -351,3 +351,25 @@
   .reply-form { flex-direction: column; }
   .reply-form .btn { width: 100%; }
 }
+
+/* ---------- Order status pills ---------- */
+.status-pending_payment { background: #FEF3C7; color: #B45309; }
+.status-paid_in_escrow,
+.status-delivered       { background: var(--lavender); color: var(--indigo); }
+.status-completed       { background: #D1FAE5; color: var(--mint-dark); }
+.status-disputed        { background: #FEE2E2; color: #DC2626; }
+.status-refunded,
+.status-cancelled       { background: #F1F5F9; color: var(--text-muted); }
+
+/* ---------- Order details ---------- */
+.order-amount {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.order-note {
+  margin-top: 10px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+.order-note.warning { color: #B45309; }
