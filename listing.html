@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listing | Hub Market</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/listing.css">
+</head>
+
+<body class="listing-page" data-protected>
+
+<header class="site-header">
+  <nav class="container nav">
+
+    <a href="index.html" class="logo">
+      <span class="logo-mark">HM</span>
+      <span>Hub Market<small>EDUVOS INCUBATION HUB</small></span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="browse.html">Browse</a></li>
+      <li><a href="index.html#how-it-works">How it works</a></li>
+      <li><a href="index.html#featured">Featured</a></li>
+      <li><a href="index.html#hub">Incubation Hub</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="register.html" class="btn btn-mint btn-sm">Start selling</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+
+  </nav>
+</header>
+
+<main>
+  <section class="listing-section">
+    <div class="container">
+
+      <a href="browse.html" class="back-link">← Back to browse</a>
+
+      <!-- Shown while loading -->
+      <p class="loading-note" id="listingLoading">Loading listing...</p>
+
+      <!-- Shown if the id is wrong, or the listing is hidden or sold -->
+      <div class="not-found" id="listingNotFound" hidden>
+        <h1>This listing isn't available</h1>
+        <p>It may have been sold or taken down by the seller.</p>
+        <a href="browse.html" class="btn btn-indigo">Browse other listings</a>
+      </div>
+
+      <!-- The listing itself -->
+      <div class="listing-layout" id="listingDetail" hidden>
+
+        <div class="listing-main">
+          <div class="listing-hero-img" id="listingImage">
+            <span class="tag" id="listingTypeTag"></span>
+          </div>
+
+          <h1 id="listingTitle"></h1>
+
+          <div class="listing-meta">
+            <span class="pill" id="listingCategory"></span>
+            <span class="pill" id="listingCampus"></span>
+          </div>
+
+          <h2 class="listing-subhead">About this listing</h2>
+          <p class="listing-description" id="listingDescription"></p>
+        </div>
+
+        <aside class="listing-side">
+          <div class="side-card">
+
+            <div>
+              <small id="priceLabel">Price</small>
+              <div class="side-price">
+                <strong id="listingPrice"></strong><span id="listingUnit"></span>
+              </div>
+            </div>
+
+            <div class="seller-box">
+              <span class="avatar" id="sellerAvatar"></span>
+              <div>
+                <strong id="sellerShop"></strong>
+                <span id="sellerName"></span>
+                <span class="verified">✓ Hub-verified seller</span>
+              </div>
+            </div>
+
+            <form class="auth-form" id="enquiryForm" novalidate>
+              <div class="form-message" id="formMessage" role="status"></div>
+
+              <div class="field">
+                <label for="enquiryMessage">Message the seller</label>
+                <textarea id="enquiryMessage" rows="4" maxlength="1000" placeholder="Hi! Is this still available? When could we meet on campus?"></textarea>
+                <span class="field-error"></span>
+              </div>
+
+              <button type="submit" class="btn btn-indigo btn-block">Send enquiry</button>
+              <p class="hint">Always meet on campus, and don't pay before you've seen the item.</p>
+            </form>
+
+            <a href="home.html#enquiries" class="btn btn-mint btn-block" id="viewEnquiries" hidden>View my enquiries</a>
+
+            <p class="own-listing" id="ownListingNote" hidden>
+              This is your listing. <a href="dashboard.html">Manage it in your seller dashboard</a>.
+            </p>
+
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="logo">
+          <span class="logo-mark">HM</span>
+          <span>Hub Market</span>
+        </a>
+        <p>The campus marketplace connecting Eduvos Incubation Hub entrepreneurs with the student community.</p>
+      </div>
+
+      <div>
+        <h4>Marketplace</h4>
+        <ul>
+          <li><a href="browse.html">Browse all</a></li>
+          <li><a href="browse.html?type=product">Products</a></li>
+          <li><a href="browse.html?type=service">Services</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Sellers</h4>
+        <ul>
+          <li><a href="become-seller.html">Become a seller</a></li>
+          <li><a href="dashboard.html">Seller dashboard</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Safety tips</a></li>
+          <li><a href="#">Report a listing</a></li>
+          <li><a href="#">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Hub Market · Eduvos Incubation Hub · Hack Jam 2026</span>
+      <span>Terms · Privacy</span>
+    </div>
+
+  </div>
+</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/listing.js"></script>
+</body>
+</html>
