@@ -63,3 +63,15 @@ const STATUS_LABELS = {
   closed: "Closed"
   
 };
+
+
+// Order statuses → friendly labels (used by buyer and seller pages)
+const ORDER_STATUS_LABELS = {
+  pending_payment: "Awaiting payment",
+  paid_in_escrow: "Paid · in escrow",
+  delivered: "Delivered",
+  completed: "Completed",
+  disputed: "Disputed",
+  refunded: "Refunded",
+  cancelled: "Cancelled"
+};
