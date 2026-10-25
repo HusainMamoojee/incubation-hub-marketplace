@@ -1,6 +1,5 @@
 // Seller tools on the home dashboard: your shop, your listings, add a listing
 
-// ---------- Show the shop (called by home.js for approved sellers) ----------
 async function loadShop(user, profile) {
   document.getElementById("myShop").hidden = false;
   document.getElementById("shopTitle").textContent = profile.shop_name || "My shop";
@@ -8,10 +7,12 @@ async function loadShop(user, profile) {
   setupAddListingForm(user, profile);
   setupListingActions(user);
   setupInboxActions(user);
+  setupSellerOrderActions(user);
 
   await Promise.all([
     loadMyListings(user),
-    loadIncomingEnquiries(user)
+    loadIncomingEnquiries(user),
+    loadSellerOrders(user)
   ]);
 }
 
@@ -291,6 +292,188 @@ function setupInboxActions(user) {
       { status: newStatus },
       newStatus === "confirmed" ? "Marked as confirmed." : "Enquiry closed."
     );
+  });
+}
+
+// ---------- Orders to fulfil (seller side of escrow) ----------
+const ESCROW_HELD_STATUSES = ["paid_in_escrow", "delivered", "disputed"];
+
+async function loadSellerOrders(user) {
+  const list = document.getElementById("sellerOrderList");
+  if (!list) return;
+
+  const [ordersResult, activeCount] = await Promise.all([
+    supabaseClient
+      .from("orders")
+      .select(`
+        id, amount, status, created_at, buyer_note, dispute_reason,
+        listing:listings ( title ),
+        buyer:profiles!orders_buyer_id_fkey ( first_name, last_name )
+      `)
+      .eq("seller_id", user.id)
+      .order("created_at", { ascending: false }),
+    supabaseClient
+      .from("listings")
+      .select("*", { count: "exact", head: true })
+      .eq("seller_id", user.id)
+      .eq("status", "active")
+  ]);
+
+  const { data: orders, error } = ordersResult;
+
+  if (error) {
+    list.innerHTML = `<p class="empty-state">We couldn't load your orders. Please refresh the page.</p>`;
+    console.error("Could not load seller orders:", error.message);
+    return;
+  }
+
+  // ----- Escrow summary -----
+  const held = orders
+    .filter((order) => ESCROW_HELD_STATUSES.includes(order.status))
+    .reduce((total, order) => total + Number(order.amount), 0);
+
+  const released = orders
+    .filter((order) => order.status === "completed")
+    .reduce((total, order) => total + Number(order.amount), 0);
+
+  const toFulfil = orders.filter((order) => order.status === "paid_in_escrow").length;
+
+  document.getElementById("statEscrow").textContent = formatPrice(held);
+  document.getElementById("statReleased").textContent = formatPrice(released);
+  document.getElementById("statToFulfil").textContent = toFulfil;
+  document.getElementById("statActiveListings").textContent = activeCount.count ?? 0;
+
+  // ----- The list -----
+  if (orders.length === 0) {
+    list.innerHTML = `<p class="empty-state">No orders yet. When a student buys one of your listings, it'll appear here.</p>`;
+    return;
+  }
+
+  list.innerHTML = orders.map(renderSellerOrder).join("");
+}
+
+function renderSellerOrder(order) {
+  const buyer = order.buyer || {};
+  const buyerName = `${buyer.first_name || "Student"} ${(buyer.last_name || "").charAt(0)}.`;
+  const title = order.listing ? order.listing.title : "A listing";
+  const amount = formatPrice(order.amount);
+  const date = new Date(order.created_at).toLocaleDateString("en-ZA", { day: "numeric", month: "short" });
+
+  const reportButton = `<button type="button" class="btn btn-ghost btn-sm" data-action="report">Report a problem</button>`;
+  const disputeForm = `
+    <form class="reply-form dispute-form" hidden>
+      <textarea rows="2" maxlength="500" placeholder="What went wrong? e.g. The buyer didn't show up." aria-label="Describe the problem"></textarea>
+      <button type="submit" class="btn btn-indigo btn-sm">Send to the Hub</button>
+    </form>`;
+
+  let details = "";
+
+  if (order.status === "pending_payment") {
+    details = `<p class="order-note">Waiting for the buyer to pay. Don't hand anything over yet.</p>`;
+  } else if (order.status === "paid_in_escrow") {
+    details = `
+      <p class="order-note">💰 ${amount} is in escrow. Hand it over on campus, then mark it as delivered.</p>
+      <div class="inbox-actions">
+        <button type="button" class="btn btn-mint btn-sm" data-action="deliver">Mark as delivered</button>
+        ${reportButton}
+      </div>
+      ${disputeForm}`;
+  } else if (order.status === "delivered") {
+    details = `
+      <p class="order-note">📦 Waiting for the buyer to confirm. ${amount} is released to you once they do.</p>
+      <div class="inbox-actions">${reportButton}</div>
+      ${disputeForm}`;
+  } else if (order.status === "disputed") {
+    details = `
+      <p class="order-note warning">
+        ⚠️ The Incubation Hub is reviewing this order. The payment stays in escrow until it's resolved.
+        ${order.dispute_reason ? `<br>Reason: ${escapeHtml(order.dispute_reason)}` : ""}
+      </p>`;
+  } else if (order.status === "completed") {
+    details = `<p class="order-note">✓ ${amount} released to you.</p>`;
+  } else if (order.status === "refunded") {
+    details = `<p class="order-note">↩ ${amount} was refunded to the buyer.</p>`;
+  } else if (order.status === "cancelled") {
+    details = `<p class="order-note">The buyer cancelled before paying.</p>`;
+  }
+
+  return `
+    <div class="inbox-item" data-order-id="${order.id}">
+      <div class="inbox-head">
+        <span class="avatar">${escapeHtml(initials(buyer.first_name, buyer.last_name))}</span>
+        <div class="enquiry-info">
+          <strong>${escapeHtml(title)}</strong>
+          <span>Order #${order.id} · ${escapeHtml(buyerName)} · ${date}</span>
+        </div>
+        <span class="order-amount">${amount}</span>
+        <span class="status-pill status-${order.status}">${ORDER_STATUS_LABELS[order.status]}</span>
+      </div>
+      ${order.buyer_note ? `<p class="inbox-message">${escapeHtml(order.buyer_note)}</p>` : ""}
+      ${details}
+    </div>`;
+}
+
+function setupSellerOrderActions(user) {
+  const list = document.getElementById("sellerOrderList");
+  const message = document.getElementById("sellerOrdersMessage");
+  if (!list) return;
+
+  const SUCCESS_TEXT = {
+    deliver: "Marked as delivered. The buyer will confirm to release your payment.",
+    dispute: "Problem reported. The Incubation Hub will review this order."
+  };
+
+  async function runAction(orderId, action, reason = null) {
+    const { error } = await supabaseClient.rpc("order_action", {
+      p_order_id: orderId,
+      p_action: action,
+      p_reason: reason
+    });
+
+    if (error) {
+      showMessage(message, error.message, "error");
+    } else {
+      showMessage(message, SUCCESS_TEXT[action], "success");
+    }
+
+    loadSellerOrders(user);
+  }
+
+  list.addEventListener("click", async (e) => {
+    const button = e.target.closest("button[data-action]");
+    if (!button) return;
+
+    const item = button.closest("[data-order-id]");
+    const orderId = Number(item.dataset.orderId);
+    const action = button.dataset.action;
+
+    if (action === "report") {
+      const form = item.querySelector(".dispute-form");
+      form.hidden = !form.hidden;
+      if (!form.hidden) form.querySelector("textarea").focus();
+      return;
+    }
+
+    button.disabled = true;
+    await runAction(orderId, action);
+  });
+
+  list.addEventListener("submit", async (e) => {
+    if (!e.target.classList.contains("dispute-form")) return;
+    e.preventDefault();
+
+    const form = e.target;
+    const textarea = form.querySelector("textarea");
+    const reason = textarea.value.trim();
+
+    if (reason === "") {
+      textarea.focus();
+      return;
+    }
+
+    const orderId = Number(form.closest("[data-order-id]").dataset.orderId);
+    form.querySelector("button").disabled = true;
+    await runAction(orderId, "dispute", reason);
   });
 }
 

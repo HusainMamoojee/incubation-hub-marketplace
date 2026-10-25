@@ -50,7 +50,43 @@
           <span class="verified">✓ Hub-verified seller</span>
         </div>
       </div>
-      <!-- seller stat cards go here -->
+            <div class="stat-cards">
+        <div class="stat-card">
+          <small>Held in escrow</small>
+          <strong id="statEscrow">–</strong>
+        </div>
+        <div class="stat-card">
+          <small>Released to you</small>
+          <strong id="statReleased">–</strong>
+        </div>
+        <div class="stat-card">
+          <small>Orders to fulfil</small>
+          <strong id="statToFulfil">–</strong>
+        </div>
+        <div class="stat-card">
+          <small>Active listings</small>
+          <strong id="statActiveListings">–</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <section class="dash-section" id="sellerOrders">
+    <div class="container">
+
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Escrow orders</span>
+          <h2>Orders to fulfil</h2>
+          <p>🔒 Buyers' money is held in escrow and released to you once they confirm they've received it.</p>
+        </div>
+      </div>
+
+      <div class="form-message" id="sellerOrdersMessage" role="status"></div>
+      <div class="enquiry-list" id="sellerOrderList">
+        <p class="empty-state">Loading your orders...</p>
+      </div>
+
     </div>
   </section>
 
