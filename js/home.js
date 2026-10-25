@@ -24,7 +24,7 @@
 async function loadProfile(user) {
   const { data: profile, error } = await supabaseClient
     .from("profiles")
-    .select("first_name, last_name, campus, seller_status, shop_name")
+    .select("first_name, last_name, campus, seller_status, shop_name, is_admin")
     .eq("id", user.id)
     .single();
 
@@ -43,7 +43,9 @@ async function loadProfile(user) {
     document.getElementById("campusName").textContent = profile.campus + " campus";
     document.getElementById("campusPill").classList.add("show");
   }
-
+  if (profile.is_admin) {
+    document.getElementById("adminLink").hidden = false;
+  }
   return profile;
 }
 
