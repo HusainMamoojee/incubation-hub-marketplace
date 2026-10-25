@@ -1,6 +1,6 @@
 // Home dashboard: everything on this page comes from Supabase
 
-// ---------- Run when the page loads ----------
+// Run when the page loads 
 (async function () {
   const user = await getCurrentUser();
   if (!user) return;
@@ -9,25 +9,18 @@
   showSellerBanner(profile);
 
   // These three don't depend on each other, so load them at the same time
-   const tasks = [
+  await Promise.all([
     loadStats(user),
     loadEnquiries(user),
     loadJustListed()
-  ];
-
-  // Approved sellers also get their shop
-  if (profile && profile.seller_status === "approved") {
-    tasks.push(loadShop(user, profile));
-  }
-
-  await Promise.all(tasks);
+  ]);
 })();
 
-// ---------- 1. Name, initials, campus ----------
+//  Name, initials, campus 
 async function loadProfile(user) {
   const { data: profile, error } = await supabaseClient
     .from("profiles")
-    .select("first_name, last_name, campus, seller_status,shop_name")
+    .select("first_name, last_name, campus, seller_status, shop_name")
     .eq("id", user.id)
     .single();
 
@@ -50,13 +43,21 @@ async function loadProfile(user) {
   return profile;
 }
 
-// ---------- 2. Seller banner ----------
+// Seller banner 
 function showSellerBanner(profile) {
   const banner = document.getElementById("sellerBanner");
   if (!banner || !profile) return;
 
   if (profile.seller_status === "approved") {
-    banner.style.display = "none";
+    // Approved sellers: link to their dashboard
+    banner.querySelector("h2").textContent = "Your shop is live 🎉";
+    banner.querySelector("p").textContent = "Add listings, update their status and reply to enquiries in your seller dashboard.";
+
+    const button = banner.querySelector("a");
+    button.href = "dashboard.html";
+    button.textContent = "Open seller dashboard";
+
+    document.getElementById("dashboardLink").hidden = false;
   } else if (profile.seller_status === "pending") {
     banner.querySelector("h2").textContent = "Your shop is under review";
     banner.querySelector("p").textContent = "The Incubation Hub is checking your application. You'll be able to add listings once you're approved.";
@@ -64,7 +65,7 @@ function showSellerBanner(profile) {
   }
 }
 
-// ---------- 3. Stats ----------
+//  Stats 
 async function countRows(query) {
   const { count, error } = await query;
   if (error) {
@@ -101,20 +102,13 @@ async function loadStats(user) {
   document.getElementById("statSellers").textContent = sellers;
 }
 
-// ---------- 4. Your enquiries ----------
-const STATUS_LABELS = {
-  new: "Awaiting reply",
-  replied: "Replied",
-  confirmed: "Confirmed",
-  closed: "Closed"
-};
-
+// Your enquiries (STATUS_LABELS lives in main.js) 
 async function loadEnquiries(user) {
   const list = document.getElementById("enquiryList");
 
   const { data: enquiries, error } = await supabaseClient
     .from("enquiries")
-     .select(`
+    .select(`
       id,
       status,
       seller_reply,
@@ -149,7 +143,7 @@ async function loadEnquiries(user) {
     return `
       <div class="enquiry-row">
         <span class="avatar">${escapeHtml(initials(seller.first_name, seller.last_name))}</span>
-       <div class="enquiry-info">
+        <div class="enquiry-info">
           <strong>${escapeHtml(title)}</strong>
           <span>${escapeHtml(sellerName)}</span>
           ${enquiry.seller_reply ? `<span class="enquiry-reply">💬 ${escapeHtml(enquiry.seller_reply)}</span>` : ""}
@@ -160,7 +154,7 @@ async function loadEnquiries(user) {
   }).join("");
 }
 
-// ---------- 5. Just listed on the Hub ----------
+// Just listed on the Hub 
 async function loadJustListed() {
   const grid = document.getElementById("justListed");
 
@@ -186,13 +180,12 @@ async function loadJustListed() {
   }
 
   grid.innerHTML = listings.map((listing, index) => renderListingCard(listing, index)).join("");
-}
 
-  grid.innerHTML = listings.map((listing, index) => renderListingCard(listing, index)).join("");
   const firstCard = grid.querySelector(".listing-card");
   if (firstCard) firstCard.classList.add("lead");
+}
 
-// ---------- Log out ----------
+// Log out 
 const logoutBtn = document.getElementById("logoutBtn");
 
 if (logoutBtn) {
