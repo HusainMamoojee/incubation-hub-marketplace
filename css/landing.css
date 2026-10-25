@@ -1,0 +1,515 @@
+/* ==========================================================
+   Landing page refresh: layered parallax
+   Loaded after styles.css, only on index.html
+   ========================================================== */
+
+:root {
+  --display: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
+}
+
+/* clip (not hidden) so position: sticky still works */
+body.landing { overflow-x: clip; }
+
+[hidden] { display: none !important; }
+
+/* ---------- Hero ---------- */
+.lp-hero {
+  position: relative;
+  overflow: clip;
+  padding: 104px 0 64px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(79, 70, 229, 0.10), transparent 60%),
+    var(--bg);
+}
+
+.lp-hero-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.lp-title {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 7.2vw, 5.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  max-width: none;
+  margin: 26px auto 24px;
+}
+
+.lp-line {
+  display: block;
+  will-change: transform, opacity;
+}
+.lp-line-in { display: inline-block; }
+
+.lp-line-2 .lp-line-in {
+  background: linear-gradient(100deg, var(--indigo) 10%, var(--violet) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-bottom: 0.08em; /* stop descenders being clipped */
+}
+
+.lp-hero .lead {
+  font-size: 1.15rem;
+  max-width: 560px;
+}
+
+.lp-hero .hero-trust span { margin-left: 10px; }
+.lp-hero .hero-trust span:first-child { margin-left: 0; }
+
+/* ---------- Depth field (orbs + floating listings) ---------- */
+.lp-depth {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.lp-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  will-change: transform;
+}
+.orb-a {
+  width: 420px;
+  height: 420px;
+  top: -60px;
+  left: -120px;
+  background: rgba(124, 58, 237, 0.20);
+}
+.orb-b {
+  width: 360px;
+  height: 360px;
+  top: 220px;
+  right: -100px;
+  background: rgba(110, 231, 183, 0.32);
+}
+
+.lp-token {
+  position: absolute;
+  will-change: transform;
+}
+
+.tok {
+  display: grid;
+  gap: 2px;
+  min-width: 170px;
+  padding: 12px 16px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.10);
+  text-align: left;
+}
+.tok-cat {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.tok strong {
+  font-size: 0.92rem;
+  color: var(--text);
+}
+.tok em {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--indigo);
+}
+
+.tok-escrow {
+  background: var(--text);
+  border-color: var(--text);
+}
+.tok-escrow .tok-cat { color: var(--mint); }
+.tok-escrow strong { color: var(--white); }
+.tok-escrow em { color: rgba(255, 255, 255, 0.65); font-weight: 500; }
+
+/* Further away = smaller, softer, fainter */
+.lp-token.far .tok {
+  transform: scale(0.82);
+  filter: blur(1.2px);
+  opacity: 0.75;
+}
+
+.t1 { top: 140px;  left: 5%; }
+.t2 { top: 96px;   right: 9%; }
+.t3 { top: 330px;  left: 2%; }
+.t4 { top: 300px;  right: 3%; }
+.t5 { top: 470px;  left: 14%; }
+.t6 { top: 450px;  right: 13%; }
+
+/* ---------- Photo stage (tilts in 3D) ---------- */
+.lp-stage {
+  position: relative;
+  z-index: 3;
+  max-width: 1080px;
+  margin: 56px auto 0;
+  perspective: 1400px;
+}
+
+.lp-photo {
+  max-width: none;
+  height: 500px;
+  margin: 0;
+  border-radius: 28px;
+  transform-origin: 50% 100%;
+  will-change: transform;
+  box-shadow: 0 40px 90px rgba(15, 23, 42, 0.22);
+}
+
+.lp-photo img {
+  position: absolute;
+  top: -15%;
+  left: 0;
+  width: 100%;
+  height: 130%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+.lp-stage .lp-float {
+  z-index: 4;
+  will-change: transform;
+}
+.lp-stage .float-top { top: 48px; left: -28px; }
+.lp-stage .float-bottom { bottom: 56px; right: -28px; }
+
+/* ---------- Search sits over the bottom of the hero ---------- */
+.landing .search-section {
+  margin-top: -36px;
+  z-index: 5;
+}
+.landing .chips .label {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ---------- Category ticker ---------- */
+.lp-marquee {
+  padding: 88px 0 24px;
+  overflow: clip;
+  display: grid;
+  gap: 4px;
+}
+
+.lp-marquee-row {
+  display: flex;
+  width: max-content;
+  margin-left: -25vw;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 7vw, 5.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+  color: var(--text);
+  will-change: transform;
+}
+
+.lp-marquee-row span::after {
+  content: "✦";
+  display: inline-block;
+  margin: 0 0.45em;
+  font-size: 0.45em;
+  vertical-align: 0.5em;
+  color: var(--mint-dark);
+}
+
+.lp-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--indigo);
+}
+.lp-outline span::after { -webkit-text-stroke: 0; color: var(--violet); }
+
+/* ---------- How it works: pinned sequence ---------- */
+.lp-steps {
+  position: relative;
+  padding: 72px 0;
+}
+
+.lp-progress {
+  height: 4px;
+  margin-bottom: 28px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+.lp-progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--indigo), var(--violet));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.lp-still .lp-progress { display: none; }
+
+.lp-steps .step {
+  will-change: transform, opacity;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.lp-steps .step.is-active {
+  border-color: var(--indigo);
+  box-shadow: 0 22px 50px rgba(79, 70, 229, 0.18);
+}
+.lp-steps .step.is-active .step-icon {
+  background: var(--indigo);
+  color: var(--white);
+}
+.lp-steps .phase {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+@media (min-width: 861px) {
+  .lp-motion .lp-steps {
+    height: 280vh;
+    padding: 0;
+  }
+  .lp-motion .lp-steps-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 68px; /* clear the sticky header */
+  }
+  .lp-motion .lp-steps-sticky > .container { width: 100%; }
+}
+
+/* ---------- Featured cards drift at different speeds ---------- */
+.lp-cards .listing-card { will-change: transform; }
+
+/* ---------- CTA rings ---------- */
+.lp-cta {
+  position: relative;
+  overflow: hidden;
+}
+.lp-cta > *:not(.lp-ring) {
+  position: relative;
+  z-index: 1;
+}
+.lp-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  will-change: transform;
+}
+.ring-a { width: 360px; height: 360px; top: -140px; left: -80px; }
+.ring-b {
+  width: 260px;
+  height: 260px;
+  bottom: -120px;
+  right: -40px;
+  border-color: rgba(110, 231, 183, 0.35);
+}
+
+/* ---------- One orchestrated load sequence ---------- */
+@keyframes lp-rise {
+  from { transform: translateY(0.6em); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+@keyframes lp-pop {
+  from { opacity: 0; scale: 0.7; }
+  to   { opacity: 1; scale: 1; }
+}
+
+.lp-motion .lp-line-in { animation: lp-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.lp-motion .lp-line-2 .lp-line-in { animation-delay: 0.12s; }
+.lp-motion .lp-token .tok { animation: lp-pop 0.8s cubic-bezier(0.2, 0.8, 0.2, 1.2) both; }
+.lp-motion .t1 .tok { animation-delay: 0.35s; }
+.lp-motion .t2 .tok { animation-delay: 0.45s; }
+.lp-motion .t3 .tok { animation-delay: 0.55s; }
+.lp-motion .t4 .tok { animation-delay: 0.5s; }
+.lp-motion .t5 .tok { animation-delay: 0.65s; }
+.lp-motion .t6 .tok { animation-delay: 0.6s; }
+
+/* ---------- Smaller screens ---------- */
+@media (max-width: 1100px) {
+  .t3, .t5 { display: none; }
+}
+
+@media (max-width: 860px) {
+  .lp-token { display: none; }
+  .lp-photo { height: 340px; }
+  .lp-stage .float-top { left: 12px; }
+  .lp-stage .float-bottom { right: 12px; }
+}
+
+@media (max-width: 760px) {
+  .lp-hero { padding-top: 64px; }
+  .lp-photo { height: 260px; border-radius: 20px; }
+  .lp-marquee { padding-top: 64px; }
+  .ring-a, .ring-b { display: none; }
+}
+
+/* ---------- Display type for section headings (ties to the hero) ---------- */
+.landing .section-head h2,
+.landing .hub-block h2,
+.landing .lp-cta h2 {
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+
+/* ---------- Product mockup in the hero frame ---------- */
+.lp-photo {
+  background: var(--white);
+  border: 1px solid var(--border);
+}
+
+.mock {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-align: left;
+}
+
+.mock-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.mock-dots { display: flex; gap: 6px; }
+.mock-dots i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #E2E8F0;
+}
+.mock-dots i:first-child { background: #FCA5A5; }
+.mock-dots i:nth-child(2) { background: #FCD34D; }
+.mock-dots i:last-child { background: var(--mint); }
+.mock-url {
+  flex: 1;
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.mock-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  min-height: 0;
+}
+
+.mock-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border-right: 1px solid var(--border);
+}
+.mock-search {
+  padding: 9px 12px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+.mock-label {
+  margin-top: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.mock-filter {
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.mock-filter.is-on {
+  background: var(--lavender);
+  color: var(--indigo);
+  font-weight: 700;
+}
+.mock-escrow {
+  margin-top: auto;
+  display: grid;
+  gap: 2px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--text);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+}
+.mock-escrow b { color: var(--mint); font-size: 0.78rem; }
+
+.mock-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 20px;
+  align-content: start;
+}
+.mock-card {
+  display: grid;
+  gap: 2px;
+  padding: 10px 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--white);
+}
+.mock-img {
+  position: relative;
+  height: 86px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+}
+.mock-img span {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--white);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--indigo);
+}
+.mock-img span.mint { color: var(--mint-dark); }
+.mock-card strong { font-size: 0.82rem; }
+.mock-card small { font-size: 0.68rem; color: var(--text-muted); }
+.mock-card em {
+  margin-top: 4px;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+@media (max-width: 860px) {
+  .mock-body { grid-template-columns: 1fr; }
+  .mock-side { display: none; }
+  .mock-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
+  .mock-img { height: 64px; }
+}
+@media (max-width: 760px) {
+  .mock-card:nth-child(n + 5) { display: none; }
+  .mock-bar { padding: 10px 14px; }
+}
+
+/* Float cards sit on the frame edges so they don't hide the mockup */
+.lp-stage .float-top { top: -26px; left: auto; right: 72px; }
+@media (max-width: 860px) {
+  .lp-stage .float-top { right: 12px; }
+}

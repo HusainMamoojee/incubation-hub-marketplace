@@ -11,11 +11,9 @@
   // Order buttons only need setting up once
   setupOrderActions(user);
 
-  // These don't depend on each other, so load them at the same time
   await Promise.all([
     loadStats(user),
     loadEnquiries(user),
-    loadOrders(user),
     loadJustListed()
   ]);
 })();

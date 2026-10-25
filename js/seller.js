@@ -476,13 +476,10 @@ function setupSellerOrderActions(user) {
     await runAction(orderId, "dispute", reason);
   });
 }
-
-// Reload everything that shows listings 
 function refreshDashboard(user) {
-
   loadMyListings(user);
+  loadSellerOrders(user);
 
-  if(typeof loadJustListed === "function") loadJustListed();
-  if(typeof loadStats === "function") loadStats(user);
-  
+  if (typeof loadJustListed === "function") loadJustListed();
+  if (typeof loadStats === "function") loadStats(user);
 }

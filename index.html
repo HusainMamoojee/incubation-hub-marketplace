@@ -6,16 +6,22 @@
   <title>Hub Market | Eduvos Incubation Hub</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/landing.css">
 </head>
-<body>
+<body class="landing">
 
 <header class="site-header">
   <nav class="container nav">
 
-    <a href="index.html" class="logo">
-      <span class="logo-mark">HM</span>
-      <span>Hub Market<small>EDUVOS INCUBATION HUB</small></span>
+    <a href="index.html" class="logo" aria-label="Hub Market home">
+      <img src="assets/logo.svg" alt="" class="logo-mark" width="38" height="38">
+      <span class="logo-text">
+        <strong>Hub Market</strong>
+        <small>by Eduvos Incubation Hub</small>
+      </span>
     </a>
 
     <ul class="nav-links" id="navLinks">
@@ -32,198 +38,381 @@
     </div>
 
   </nav>
-
-  
 </header>
 
-
-
 <main>
-  <section class="hero">
-    <div class="container">
+
+  <!-- ========== HERO: the campus in layers ========== -->
+  <section class="hero lp-hero">
+
+    <!-- Depth field: listings floating at different distances -->
+    <div class="lp-depth" aria-hidden="true">
+      <span class="lp-orb orb-a" data-depth="0.5"></span>
+      <span class="lp-orb orb-b" data-depth="-0.35"></span>
+
+      <div class="lp-token t1" data-depth="0.9">
+        <div class="tok">
+          <span class="tok-cat">Tutoring</span>
+          <strong>Java &amp; Python help</strong>
+          <em>R120/hr</em>
+        </div>
+      </div>
+      <div class="lp-token t2 far" data-depth="0.35">
+        <div class="tok">
+          <span class="tok-cat">Food &amp; snacks</span>
+          <strong>Soy candle set</strong>
+          <em>R85</em>
+        </div>
+      </div>
+      <div class="lp-token t3 far" data-depth="0.45">
+        <div class="tok">
+          <span class="tok-cat">Design</span>
+          <strong>Custom logo</strong>
+          <em>R250</em>
+        </div>
+      </div>
+      <div class="lp-token t4" data-depth="1.1">
+        <div class="tok">
+          <span class="tok-cat">Photography</span>
+          <strong>LinkedIn headshots</strong>
+          <em>R150/session</em>
+        </div>
+      </div>
+      <div class="lp-token t5 far" data-depth="0.25">
+        <div class="tok">
+          <span class="tok-cat">Tech help</span>
+          <strong>Laptop tune-up</strong>
+          <em>R150</em>
+        </div>
+      </div>
+      <div class="lp-token t6" data-depth="0.75">
+        <div class="tok tok-escrow">
+          <span class="tok-cat">Escrow</span>
+          <strong>R150 held safely</strong>
+          <em>Released on delivery</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="container lp-hero-copy">
 
       <span class="pill"><span class="dot"></span> Eduvos Incubation Hub · Verified student sellers</span>
 
-      <h1>The campus marketplace built for <span class="highlight">student entrepreneurs</span>.</h1>
+      <h1 class="lp-title">
+        <span class="lp-line"><span class="lp-line-in">The campus marketplace</span></span>
+        <span class="lp-line lp-line-2"><span class="lp-line-in">built for student entrepreneurs.</span></span>
+      </h1>
 
       <p class="lead">Discover products and services made by Eduvos students. Buy, book and connect with Hub entrepreneurs, then meet safely on campus.</p>
 
       <div class="hero-buttons">
-        <a href="browse.html" class="btn btn-mint">Browse the marketplace →</a>
+        <a href="browse.html" class="btn btn-mint">Browse the marketplace</a>
         <a href="register.html" class="btn btn-indigo">Start selling</a>
       </div>
 
-      <p class="hero-trust"><span>✓</span> Only verified Eduvos students · <span>✓</span> Safe on-campus pickup</p>
+      <p class="hero-trust"><span>✓</span> Only verified Eduvos students <span>✓</span> Safe on-campus pickup <span>✓</span> Escrow-protected payments</p>
+    </div>
 
-      <div class="hero-visual">
-        <img src="assets/hero.jpg" alt="Eduvos students using the marketplace on campus">
+    <!-- Photo stage: tilts up and flattens as you scroll -->
+    <div class="container">
+      <div class="lp-stage">
+        <div class="hero-visual lp-photo" role="img" aria-label="Preview of the Hub Market browse page, showing student listings">
+          <div class="mock" aria-hidden="true">
 
-        <div class="float-card float-top">
+            <div class="mock-bar">
+              <span class="mock-dots"><i></i><i></i><i></i></span>
+              <span class="mock-url">Hub Market / Browse</span>
+            </div>
+
+            <div class="mock-body">
+              <aside class="mock-side">
+                <span class="mock-search">Search tutoring, food, design...</span>
+                <span class="mock-filter is-on">All</span>
+                <span class="mock-filter">Products</span>
+                <span class="mock-filter">Services</span>
+                <span class="mock-label">Campus</span>
+                <span class="mock-filter">Bedfordview</span>
+                <span class="mock-escrow"><b>🔒 Escrow on</b>Paid only when you confirm</span>
+              </aside>
+
+              <div class="mock-grid">
+                <div class="mock-card">
+                  <div class="mock-img ph-1"><span>Service</span></div>
+                  <strong>LinkedIn headshots</strong>
+                  <small>Lerato N. · Hub verified</small>
+                  <em>R150/session</em>
+                </div>
+                <div class="mock-card">
+                  <div class="mock-img ph-2"><span class="mint">Product</span></div>
+                  <strong>Soy candle set</strong>
+                  <small>Aisha K. · Hub verified</small>
+                  <em>R85</em>
+                </div>
+                <div class="mock-card">
+                  <div class="mock-img ph-3"><span>Tutoring</span></div>
+                  <strong>Java &amp; Python help</strong>
+                  <small>Sipho D. · Hub verified</small>
+                  <em>R120/hr</em>
+                </div>
+                <div class="mock-card">
+                  <div class="mock-img ph-2"><span>Design</span></div>
+                  <strong>Custom logo design</strong>
+                  <small>Naledi M. · Hub verified</small>
+                  <em>R250</em>
+                </div>
+                <div class="mock-card">
+                  <div class="mock-img ph-3"><span class="mint">Product</span></div>
+                  <strong>Thrifted denim jackets</strong>
+                  <small>Kyle P. · Hub verified</small>
+                  <em>R180</em>
+                </div>
+                <div class="mock-card">
+                  <div class="mock-img ph-1"><span>Tech help</span></div>
+                  <strong>Laptop tune-up</strong>
+                  <small>Husain M. · Hub verified</small>
+                  <em>R150</em>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="float-card lp-float float-top" data-depth="0.5">
           <div class="row">
             <span class="avatar">TM</span>
             <div>
               <strong>Thando M.</strong>
-              <span class="muted">Booked: Portrait shoot · Bedfordview</span>
+              <span class="muted">Booked: Portrait shoot, Bedfordview</span>
             </div>
           </div>
         </div>
 
-        <div class="float-card float-bottom">
+        <div class="float-card lp-float float-bottom" data-depth="0.9">
           <strong>New drop: Soy candle set</strong>
           <span class="muted">Ready for pickup at the Hub</span>
         </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ========== SEARCH ========== -->
+  <section class="search-section">
+    <div class="container">
+      <div class="search-box">
+
+        <form class="search-form" id="searchForm" action="browse.html" method="get">
+          <input
+            type="search"
+            name="q"
+            id="searchInput"
+            placeholder="What are you looking for? e.g. tutoring, baked goods, photography"
+            aria-label="Search the marketplace">
+          <button type="submit" class="btn btn-indigo">Search</button>
+        </form>
+
+        <div class="chips">
+          <span class="label">Popular</span>
+          <button class="chip" type="button">Tutoring</button>
+          <button class="chip" type="button">Food &amp; snacks</button>
+          <button class="chip" type="button">Fashion</button>
+          <button class="chip" type="button">Photography</button>
+          <button class="chip" type="button">Design</button>
+          <button class="chip" type="button">Tech help</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CATEGORY TICKER (moves with scroll) ========== -->
+  <section class="lp-marquee" aria-hidden="true">
+    <div class="lp-marquee-row" data-marquee="-0.35">
+      <span>Tutoring</span><span>Food &amp; snacks</span><span>Fashion</span><span>Photography</span><span>Design</span><span>Tech help</span>
+      <span>Tutoring</span><span>Food &amp; snacks</span><span>Fashion</span><span>Photography</span><span>Design</span><span>Tech help</span>
+    </div>
+    <div class="lp-marquee-row lp-outline" data-marquee="0.25">
+      <span>Bedfordview</span><span>Midrand</span><span>Pretoria</span><span>Durban</span><span>Cape Town</span><span>Tygervalley</span>
+      <span>Bedfordview</span><span>Midrand</span><span>Pretoria</span><span>Durban</span><span>Cape Town</span><span>Tygervalley</span>
+    </div>
+  </section>
+
+  <!-- ========== HOW IT WORKS (pins and plays step by step) ========== -->
+  <section class="lp-steps" id="how-it-works">
+    <div class="lp-steps-sticky">
+      <div class="container">
+
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">How it works</span>
+            <h2>From idea to first sale, on campus</h2>
+            <p>No random strangers. No awkward cash meetups.</p>
+          </div>
+        </div>
+
+        <div class="lp-progress" aria-hidden="true"><span></span></div>
+
+        <div class="steps">
+          <article class="step">
+            <div class="step-icon">1</div>
+            <span class="phase">Step 1</span>
+            <h3>Verify with your student email</h3>
+            <p>Every buyer and seller signs up with an Eduvos email, so you always know who you're dealing with.</p>
+          </article>
+
+          <article class="step">
+            <div class="step-icon">2</div>
+            <span class="phase">Step 2</span>
+            <h3>List products or services</h3>
+            <p>Sell physical products or offer bookable services like tutoring, design or photography.</p>
+          </article>
+
+          <article class="step">
+            <div class="step-icon">3</div>
+            <span class="phase">Step 3</span>
+            <h3>Pay safely with escrow</h3>
+            <p>Your money is held until you confirm you've received your order, so nobody gets scammed.</p>
+          </article>
+
+          <article class="step">
+            <div class="step-icon">4</div>
+            <span class="phase">Step 4</span>
+            <h3>Meet safely on campus</h3>
+            <p>Collect your order at an agreed campus pickup point instead of meeting off-site.</p>
+          </article>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FEATURED ========== -->
+  <section class="section section-tight" id="featured">
+    <div class="container">
+
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Featured</span>
+          <h2>Fresh from Hub entrepreneurs</h2>
+        </div>
+        <a href="browse.html" class="link-arrow">View all listings</a>
+      </div>
+
+      <div class="card-grid lp-cards">
+
+        <article class="listing-card" data-speed="0">
+          <div class="listing-img ph-1">
+            <span class="tag">Service</span>
+          </div>
+          <div class="listing-body">
+            <div class="seller row">
+              <span class="avatar">LN</span>
+              <span>Lerato N. <span class="verified">Hub verified</span></span>
+            </div>
+            <h3>Portrait &amp; LinkedIn headshots</h3>
+            <p>30-minute on-campus shoot with 5 edited photos, perfect for CVs and graduate applications.</p>
+            <div class="listing-footer">
+              <div class="price">
+                <small>From</small>
+                <strong>R150</strong><span>/session</span>
+              </div>
+              <a href="browse.html?type=service" class="btn btn-indigo btn-sm">Browse services</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="listing-card" data-speed="-0.08">
+          <div class="listing-img ph-2">
+            <span class="tag tag-mint">Product</span>
+          </div>
+          <div class="listing-body">
+            <div class="seller row">
+              <span class="avatar">AK</span>
+              <span>Aisha K. <span class="verified">Hub verified</span></span>
+            </div>
+            <h3>Hand-poured soy candle set</h3>
+            <p>Three small-batch candles in reusable jars. Collect from the Incubation Hub.</p>
+            <div class="listing-footer">
+              <div class="price">
+                <small>Price</small>
+                <strong>R85</strong>
+              </div>
+              <a href="browse.html?type=product" class="btn btn-indigo btn-sm">Browse products</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="listing-card" data-speed="0.06">
+          <div class="listing-img ph-3">
+            <span class="tag">Tutoring</span>
+          </div>
+          <div class="listing-body">
+            <div class="seller row">
+              <span class="avatar">SD</span>
+              <span>Sipho D. <span class="verified">Hub verified</span></span>
+            </div>
+            <h3>Java &amp; Python tutoring</h3>
+            <p>One-on-one help with assignments, OOP concepts and exam prep, on campus or online.</p>
+            <div class="listing-footer">
+              <div class="price">
+                <small>Hourly</small>
+                <strong>R120</strong><span>/hr</span>
+              </div>
+              <a href="browse.html?q=tutoring" class="btn btn-indigo btn-sm">Find a tutor</a>
+            </div>
+          </div>
+        </article>
+
       </div>
 
     </div>
   </section>
 
-  <section class="search-section">
-  <div class="container">
-    <div class="search-box">
+  <!-- ========== INCUBATION HUB ========== -->
+  <section class="section section-tight" id="hub">
+    <div class="container">
+      <div class="hub-block">
 
-      <form class="search-form" id="searchForm" action="browse.html" method="get">
-        <input
-          type="search"
-          name="q"
-          id="searchInput"
-          placeholder="What are you looking for? e.g. tutoring, baked goods, photography"
-          aria-label="Search the marketplace">
-        <button type="submit" class="btn btn-indigo">Search</button>
-      </form>
-
-      <div class="chips">
-        <span class="label">POPULAR</span>
-        <button class="chip" type="button">Tutoring</button>
-        <button class="chip" type="button">Food &amp; snacks</button>
-        <button class="chip" type="button">Fashion</button>
-        <button class="chip" type="button">Photography</button>
-        <button class="chip" type="button">Design</button>
-        <button class="chip" type="button">Tech help</button>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<section class="section" id="how-it-works">
-  <div class="container">
-
-    <div class="section-head">
-      <div>
-        <span class="eyebrow">How it works</span>
-        <h2>From idea to first sale, on campus</h2>
-        <p>No random strangers. No awkward cash meetups.</p>
-      </div>
-    </div>
-
-    <div class="steps">
-      <article class="step">
-        <div class="step-icon">1</div>
-        <span class="phase">STEP 01</span>
-        <h3>Verify with your student email</h3>
-        <p>Every buyer and seller signs up with an Eduvos email, so you always know who you're dealing with.</p>
-      </article>
-
-      <article class="step">
-        <div class="step-icon">2</div>
-        <span class="phase">STEP 02</span>
-        <h3>List products or services</h3>
-        <p>Sell physical products or offer bookable services like tutoring, design or photography.</p>
-      </article>
-
-      <article class="step">
-        <div class="step-icon">3</div>
-        <span class="phase">STEP 03</span>
-        <h3>Discover and enquire</h3>
-        <p>Search by category or campus, then message the seller or send an enquiry in one click.</p>
-      </article>
-      <article class="step">
-        <div class="step-icon">4</div>
-        <span class="phase">STEP 04</span>
-        <h3>Meet safely on campus</h3>
-        <p>Collect your order at an agreed campus pickup point instead of meeting off-site.</p>
-      </article>
-    </div>
-
-  </div>
-</section>
-
-<section class="section section-tight" id="featured">
-  <div class="container">
-
-    <div class="section-head">
-      <div>
-        <span class="eyebrow">Featured</span>
-        <h2>Fresh from Hub entrepreneurs</h2>
-      </div>
-      <a href="browse.html" class="link-arrow">View all listings →</a>
-    </div>
-
-    <div class="card-grid">
-
-      <article class="listing-card">
-        <div class="listing-img ph-1">
-          <span class="tag">Service</span>
-          <span class="rating">★ 4.9</span>
+        <div>
+          <span class="eyebrow">Powered by the Incubation Hub</span>
+          <h2>More than a marketplace: a launchpad.</h2>
+          <p>Hub Market gives student entrepreneurs a real storefront, real customers and real feedback, while the Incubation Hub tracks which ventures are taking off.</p>
+          <ul class="checks">
+            <li>Hub-verified seller badges</li>
+            <li>Products and bookable services</li>
+            <li>Escrow-protected payments</li>
+            <li>Built to scale across campuses</li>
+          </ul>
         </div>
-        <div class="listing-body">
-          <div class="seller row">
-            <span class="avatar">LN</span>
-            <span>Lerato N. · <span class="verified">Hub verified</span></span>
-          </div>
-          <h3>Portrait &amp; LinkedIn headshots</h3>
-          <p>30-minute on-campus shoot with 5 edited photos, perfect for CVs and graduate applications.</p>
-          <div class="listing-footer">
-            <div class="price">
-              <small>From</small>
-              <strong>R150</strong><span>/session</span>
-            </div>
-            <a href="listing.html" class="btn btn-indigo btn-sm">Book slot</a>
-          </div>
+
+        <div class="stats" data-speed="-0.06">
+          <div class="stat"><strong>12</strong><span>Eduvos campuses</span></div>
+          <div class="stat"><strong>R0</strong><span>Listing fees for Hub members</span></div>
+          <div class="stat"><strong>2</strong><span>Ways to sell: products &amp; services</span></div>
+          <div class="stat"><strong>100%</strong><span>Verified student sellers</span></div>
         </div>
-      </article>
 
-    </div>
-
-  </div>
-</section>
-<section class="section section-tight" id="hub">
-  <div class="container">
-    <div class="hub-block">
-
-      <div>
-        <span class="eyebrow">Powered by the Incubation Hub</span>
-        <h2>More than a marketplace: a launchpad.</h2>
-        <p>Hub Market gives student entrepreneurs a real storefront, real customers and real feedback, while the Incubation Hub tracks which ventures are taking off.</p>
-        <ul class="checks">
-          <li>Hub-verified seller badges</li>
-          <li>Products and bookable services</li>
-          <li>Seller insights on views and enquiries</li>
-          <li>Built to scale across campuses</li>
-        </ul>
       </div>
+    </div>
+  </section>
 
-      <div class="stats">
-        <div class="stat"><strong>12</strong><span>Eduvos campuses</span></div>
-        <div class="stat"><strong>R0</strong><span>Listing fees for Hub members</span></div>
-        <div class="stat"><strong>2</strong><span>Ways to sell: products &amp; services</span></div>
-        <div class="stat"><strong>100%</strong><span>Verified student sellers</span></div>
+  <!-- ========== CTA ========== -->
+  <section class="container lp-cta-wrap">
+    <div class="cta lp-cta">
+      <span class="lp-ring ring-a" data-speed="0.18" aria-hidden="true"></span>
+      <span class="lp-ring ring-b" data-speed="-0.14" aria-hidden="true"></span>
+
+      <span class="pill pill-light">Eduvos student email required</span>
+      <h2>Ready to sell, buy or book on campus?</h2>
+      <p>Sign up with your Eduvos email and turn your side hustle into a business your campus can find.</p>
+      <div class="hero-buttons">
+        <a href="register.html" class="btn btn-mint">Create your seller profile</a>
+        <a href="browse.html" class="btn btn-outline-light">Browse listings</a>
       </div>
+    </div>
+  </section>
 
-    </div>
-  </div>
-</section>
-<section class="container">
-  <div class="cta">
-    <span class="pill pill-light">Eduvos student email required</span>
-    <h2>Ready to sell, buy or book on campus?</h2>
-    <p>Sign up with your Eduvos email and turn your side hustle into a business your campus can find.</p>
-    <div class="hero-buttons">
-      <a href="register.html" class="btn btn-mint">Create your seller profile</a>
-      <a href="browse.html" class="btn btn-outline-light">Browse listings</a>
-    </div>
-  </div>
-</section>
 </main>
 
 <footer class="site-footer">
@@ -231,9 +420,11 @@
 
     <div class="footer-grid">
       <div>
-        <a href="index.html" class="logo">
-          <span class="logo-mark">HM</span>
-          <span>Hub Market</span>
+        <a href="index.html" class="logo" aria-label="Hub Market home">
+          <img src="assets/logo.svg" alt="" class="logo-mark" width="38" height="38">
+          <span class="logo-text">
+            <strong>Hub Market</strong>
+          </span>
         </a>
         <p>The campus marketplace connecting Eduvos Incubation Hub entrepreneurs with the student community.</p>
       </div>
@@ -274,11 +465,10 @@
   </div>
 </footer>
 
-
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script src="js/supabase.js"></script>
-    <script src="js/session.js"></script>
+  <script src="js/session.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/landing.js"></script>
 </body>
 </html>
