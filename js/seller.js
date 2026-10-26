@@ -1,7 +1,6 @@
-// Seller tools on the home dashboard: your shop, your listings, add a listing
+// Seller tools for dashboard.html: orders, listings, add a listing and enquiries
 
 async function loadShop(user, profile) {
-  document.getElementById("myShop").hidden = false;
   document.getElementById("shopTitle").textContent = profile.shop_name || "My shop";
 
   setupAddListingForm(user, profile);
@@ -16,13 +15,21 @@ async function loadShop(user, profile) {
   ]);
 }
 
+// ---------- Tab badges: the little numbers next to Orders / Listings / Enquiries ----------
+function setTabCount(id, count) {
+  const badge = document.getElementById(id);
+  if (!badge) return;
+  badge.textContent = count;
+  badge.hidden = count === 0;
+}
+
 // ---------- Your listings ----------
 async function loadMyListings(user) {
   const box = document.getElementById("myListings");
 
   const { data: listings, error } = await supabaseClient
     .from("listings")
-    .select("id, title, type, price, price_unit, status")
+    .select("id, title, type, category, price, price_unit, status")
     .eq("seller_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -31,6 +38,8 @@ async function loadMyListings(user) {
     console.error("Could not load your listings:", error.message);
     return;
   }
+
+  setTabCount("countListings", listings.length);
 
   if (listings.length === 0) {
     box.innerHTML = `
@@ -41,19 +50,24 @@ async function loadMyListings(user) {
   }
 
   box.innerHTML = listings.map((listing) => `
-    <div class="enquiry-row" data-listing-id="${listing.id}">
+    <div class="enquiry-row listing-row is-${listing.status}" data-listing-id="${listing.id}">
+      <span class="listing-dot" aria-hidden="true"></span>
       <div class="enquiry-info">
         <strong>${escapeHtml(listing.title)}</strong>
         <span>
           ${listing.type === "service" ? "Service" : "Product"} ·
-          ${formatPrice(listing.price)}${listing.price_unit ? "/" + escapeHtml(listing.price_unit) : ""}
+          ${escapeHtml(listing.category || "Other")}
         </span>
       </div>
+      <span class="order-amount">
+        ${formatPrice(listing.price)}${listing.price_unit ? `<small>/${escapeHtml(listing.price_unit)}</small>` : ""}
+      </span>
       <select class="listing-status" aria-label="Status of ${escapeHtml(listing.title)}">
         <option value="active" ${listing.status === "active" ? "selected" : ""}>Active</option>
         <option value="hidden" ${listing.status === "hidden" ? "selected" : ""}>Hidden</option>
         <option value="sold" ${listing.status === "sold" ? "selected" : ""}>Sold</option>
       </select>
+      <a href="listing.html?id=${listing.id}" class="enquiry-link">View</a>
     </div>
   `).join("");
 }
@@ -161,7 +175,7 @@ function setupAddListingForm(user, profile) {
       return;
     }
 
-    showMessage(box, "Listing published! 🎉", "success");
+    showMessage(box, "Listing published!", "success");
     refreshDashboard(user);
     setTimeout(closeForm, 1200);
   });
@@ -186,6 +200,9 @@ async function loadIncomingEnquiries(user) {
     console.error("Could not load incoming enquiries:", error.message);
     return;
   }
+
+  // Badge = enquiries still waiting for your reply
+  setTabCount("countEnquiries", enquiries.filter((enquiry) => enquiry.status === "new").length);
 
   if (enquiries.length === 0) {
     box.innerHTML = `<p class="empty-state">No enquiries yet. They'll appear here when students message you about your listings.</p>`;
@@ -298,6 +315,9 @@ function setupInboxActions(user) {
 // ---------- Orders to fulfil (seller side of escrow) ----------
 const ESCROW_HELD_STATUSES = ["paid_in_escrow", "delivered", "disputed"];
 
+// Orders that still need something to happen go at the top; the rest go under "Past orders"
+const OPEN_ORDER_STATUSES = ["pending_payment", "paid_in_escrow", "delivered", "disputed"];
+
 async function loadSellerOrders(user) {
   const list = document.getElementById("sellerOrderList");
   if (!list) return;
@@ -343,13 +363,27 @@ async function loadSellerOrders(user) {
   document.getElementById("statToFulfil").textContent = toFulfil;
   document.getElementById("statActiveListings").textContent = activeCount.count ?? 0;
 
-  // ----- The list -----
-  if (orders.length === 0) {
-    list.innerHTML = `<p class="empty-state">No orders yet. When a student buys one of your listings, it'll appear here.</p>`;
-    return;
+  // Badge = orders you need to hand over
+  setTabCount("countOrders", toFulfil);
+
+  // ----- Split into open and past orders -----
+  const openOrders = orders.filter((order) => OPEN_ORDER_STATUSES.includes(order.status));
+  const pastOrders = orders.filter((order) => !OPEN_ORDER_STATUSES.includes(order.status));
+
+  if (openOrders.length === 0) {
+    list.innerHTML = orders.length === 0
+      ? `<p class="empty-state">No orders yet. When a student buys one of your listings, it'll appear here.</p>`
+      : `<p class="empty-state">You're all caught up. Nothing needs your attention right now.</p>`;
+  } else {
+    list.innerHTML = openOrders.map(renderSellerOrder).join("");
   }
 
-  list.innerHTML = orders.map(renderSellerOrder).join("");
+  const pastBox = document.getElementById("pastOrders");
+  if (pastBox) {
+    pastBox.hidden = pastOrders.length === 0;
+    document.getElementById("pastCount").textContent = `(${pastOrders.length})`;
+    document.getElementById("pastOrderList").innerHTML = pastOrders.map(renderSellerOrder).join("");
+  }
 }
 
 function renderSellerOrder(order) {
@@ -372,7 +406,7 @@ function renderSellerOrder(order) {
     details = `<p class="order-note">Waiting for the buyer to pay. Don't hand anything over yet.</p>`;
   } else if (order.status === "paid_in_escrow") {
     details = `
-      <p class="order-note">💰 ${amount} is in escrow. Hand it over on campus, then mark it as delivered.</p>
+      <p class="order-note">${amount} is in escrow. Hand it over on campus, then mark it as delivered.</p>
       <div class="inbox-actions">
         <button type="button" class="btn btn-mint btn-sm" data-action="deliver">Mark as delivered</button>
         ${reportButton}
@@ -380,13 +414,13 @@ function renderSellerOrder(order) {
       ${disputeForm}`;
   } else if (order.status === "delivered") {
     details = `
-      <p class="order-note">📦 Waiting for the buyer to confirm. ${amount} is released to you once they do.</p>
+      <p class="order-note">Waiting for the buyer to confirm. ${amount} is released to you once they do.</p>
       <div class="inbox-actions">${reportButton}</div>
       ${disputeForm}`;
   } else if (order.status === "disputed") {
     details = `
       <p class="order-note warning">
-        ⚠️ The Incubation Hub is reviewing this order. The payment stays in escrow until it's resolved.
+        The Incubation Hub is reviewing this order. The payment stays in escrow until it's resolved.
         ${order.dispute_reason ? `<br>Reason: ${escapeHtml(order.dispute_reason)}` : ""}
       </p>`;
   } else if (order.status === "completed") {
@@ -476,10 +510,8 @@ function setupSellerOrderActions(user) {
     await runAction(orderId, "dispute", reason);
   });
 }
+// Reload everything that changes when a listing is added or updated
 function refreshDashboard(user) {
   loadMyListings(user);
   loadSellerOrders(user);
-
-  if (typeof loadJustListed === "function") loadJustListed();
-  if (typeof loadStats === "function") loadStats(user);
 }
