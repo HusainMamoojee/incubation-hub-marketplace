@@ -373,3 +373,432 @@
   color: var(--text-muted);
 }
 .order-note.warning { color: #B45309; }
+/* =========================================================
+   HOME REFRESH: quick actions, orders preview, categories,
+   campus listings and the trust block. No parallax here.
+   ========================================================= */
+
+.home-sub {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+}
+
+/* ---------- Quick actions ---------- */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.qa {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.qa:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: transparent;
+}
+
+.qa-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--lavender);
+  color: var(--indigo);
+}
+.qa-icon svg { width: 22px; height: 22px; }
+
+.qa-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.qa-text strong { font-size: 0.98rem; }
+.qa-text small {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.qa-text b { color: var(--text); }
+
+/* The sell tile is the one bold tile */
+.qa-sell {
+  background: var(--gradient);
+  border-color: transparent;
+  color: var(--white);
+}
+.qa-sell .qa-icon { background: rgba(255, 255, 255, 0.18); color: var(--white); }
+.qa-sell .qa-text small { color: rgba(255, 255, 255, 0.8); }
+
+/* ---------- Spacing between home sections ---------- */
+.home-page .dash-section { padding: 0 0 72px; }
+.home-page #enquiries { padding-top: 0; border-top: 0; }
+
+/* ---------- Orders in progress ---------- */
+.progress-list {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.progress-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.progress-item + .progress-item { border-top: 1px solid var(--border); }
+.progress-item:hover { background: var(--bg); }
+
+.progress-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.progress-info small { color: var(--text-muted); }
+
+/* ---------- Shop by category ---------- */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+
+.cat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 16px;
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cat:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.cat-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  background: var(--white);
+}
+.cat-icon svg { width: 22px; height: 22px; }
+.cat strong { font-size: 0.98rem; }
+.cat small {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+/* One soft colour per tile, and a matching stronger colour for its icon */
+.cat-1 { background: #EEF2FF; } .cat-1 .cat-icon { color: #4F46E5; }
+.cat-2 { background: #FEF3C7; } .cat-2 .cat-icon { color: #B45309; }
+.cat-3 { background: #F3E8FF; } .cat-3 .cat-icon { color: #7C3AED; }
+.cat-4 { background: #D1FAE5; } .cat-4 .cat-icon { color: #059669; }
+.cat-5 { background: #FCE7F3; } .cat-5 .cat-icon { color: #DB2777; }
+.cat-6 { background: #E0F2FE; } .cat-6 .cat-icon { color: #0284C7; }
+
+/* ---------- Trust block ---------- */
+.trust-block {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 48px;
+  padding: 44px;
+  background: var(--text);
+  color: var(--white);
+  border-radius: 24px;
+}
+
+.trust-intro h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.trust-intro p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 12px;
+}
+.trust-number {
+  margin-top: 28px !important;
+  font-size: 0.95rem;
+}
+.trust-number strong {
+  display: block;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--mint);
+  margin-bottom: 4px;
+}
+
+.trust-points {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-content: center;
+}
+.trust-point {
+  display: flex;
+  gap: 14px;
+}
+.trust-icon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--mint);
+}
+.trust-icon svg { width: 20px; height: 20px; }
+.trust-point p {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+
+/* ---------- Smaller screens ---------- */
+@media (max-width: 960px) {
+  .quick-actions { grid-template-columns: repeat(2, 1fr); }
+  .category-grid { grid-template-columns: repeat(3, 1fr); }
+  .trust-block { grid-template-columns: 1fr; gap: 32px; padding: 32px; }
+}
+
+@media (max-width: 560px) {
+  .category-grid { grid-template-columns: repeat(2, 1fr); }
+  .trust-points { grid-template-columns: 1fr; }
+  .quick-actions { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .qa { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; }
+
+  /* Order rows: avatar | details | amount, with the status pill underneath */
+  .progress-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    column-gap: 12px;
+    row-gap: 8px;
+  }
+  .progress-item .status-pill { grid-column: 2 / 4; justify-self: start; }
+}
+
+/* Breathing room between the hero and the first section */
+.home-hero { padding-bottom: 56px; margin-bottom: 16px; }
+
+/* =========================================================
+   SELLER DASHBOARD: shop header, stats with icons, tabs,
+   listing rows and past orders
+   ========================================================= */
+
+.seller-hero { padding-bottom: 40px; }
+
+.seller-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #D1FAE5;
+  color: var(--mint-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.seller-badge svg { width: 14px; height: 14px; }
+
+/* ---------- Stats ---------- */
+.seller-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.seller-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.seller-stat small {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.seller-stat strong {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+.stat-hint {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-top: 4px;
+}
+
+.stat-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  background: var(--lavender);
+  color: var(--indigo);
+}
+.stat-icon svg { width: 19px; height: 19px; }
+.stat-icon.icon-mint   { background: #D1FAE5; color: var(--mint-dark); }
+.stat-icon.icon-amber  { background: #FEF3C7; color: #B45309; }
+.stat-icon.icon-violet { background: #F3E8FF; color: var(--violet); }
+
+/* ---------- Tabs ---------- */
+.seller-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.seller-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.seller-tab:hover { color: var(--text); }
+.seller-tab.active {
+  color: var(--indigo);
+  border-bottom-color: var(--indigo);
+}
+
+/* The number next to a tab: purple when something needs doing, grey for plain totals */
+.tab-count {
+  min-width: 22px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--indigo);
+  color: var(--white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+.tab-count.muted {
+  background: var(--border);
+  color: var(--text-muted);
+}
+
+.panel-subhead {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* ---------- Past orders (folds open) ---------- */
+.past-orders { margin-top: 28px; }
+.past-orders summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 8px 0;
+  margin-bottom: 12px;
+}
+.past-orders summary:hover { color: var(--text); }
+.past-orders .inbox-item { opacity: 0.85; }
+
+/* ---------- Add listing form ---------- */
+.form-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* ---------- Listing rows ---------- */
+.listing-row .order-amount small {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.listing-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--mint-dark);
+}
+.listing-row.is-hidden .listing-dot { background: #CBD5E1; }
+.listing-row.is-sold .listing-dot { background: #F59E0B; }
+.listing-row.is-hidden .enquiry-info strong,
+.listing-row.is-sold .enquiry-info strong { color: var(--text-muted); }
+
+/* ---------- Smaller screens ---------- */
+@media (max-width: 960px) {
+  .seller-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .seller-stats { gap: 12px; }
+  .seller-stat { padding: 16px; }
+  .seller-stat strong { font-size: 1.5rem; }
+  .stat-hint { display: none; }
+
+  .listing-row { flex-wrap: wrap; }
+  .listing-row .enquiry-info { flex-basis: calc(100% - 30px); }
+  .listing-row .order-amount { margin-left: 24px; margin-right: auto; }
+}
+
+/* Phones: tighter tabs, and order/enquiry headers that don't squash the title
+   (this also fixes the same rows on orders.html and admin.html) */
+@media (max-width: 560px) {
+  .seller-tab { padding: 12px 10px; font-size: 0.92rem; }
+
+  .inbox-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    column-gap: 12px;
+    row-gap: 6px;
+    align-items: center;
+  }
+  .inbox-head .status-pill { grid-column: 2 / 4; justify-self: start; }
+}

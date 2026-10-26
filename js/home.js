@@ -1,363 +1,287 @@
-// Home dashboard: everything on this page comes from Supabase
+// Home: the logged-in buyer's starting point. Everything here comes from Supabase.
+// Wrapped in one function so names can't clash with other scripts.
 
-// Run when the page loads
 (async function () {
+  // ---------- Settings for this page ----------
+  // Orders that still need something to happen
+  const ACTIVE_ORDER_STATUSES = ["pending_payment", "paid_in_escrow", "delivered", "disputed"];
+
+  // A short "what happens next" line for each of those statuses
+  const NEXT_STEP = {
+    pending_payment: "Waiting for your payment",
+    paid_in_escrow: "Meet the seller to collect",
+    delivered: "Confirm you received it",
+    disputed: "The Hub is reviewing this"
+  };
+
+  // Columns renderListingCard() needs (used by two sections)
+  const LISTING_FIELDS = `
+    id, title, description, type, price, price_unit,
+    seller:profiles ( first_name, last_name )
+  `;
+
+  // Log out
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  // ---------- Load the page ----------
   const user = await getCurrentUser();
   if (!user) return;
 
   const profile = await loadProfile(user);
-  showSellerBanner(profile);
+  showSellerStatus(profile);
 
-  // Order buttons only need setting up once
-  setupOrderActions(user);
-
+  // These don't depend on each other, so load them at the same time
   await Promise.all([
     loadStats(user),
-    loadEnquiries(user),
-    loadJustListed()
-  ]);
-})();
-
-// Name, initials, campus
-async function loadProfile(user) {
-  const { data: profile, error } = await supabaseClient
-    .from("profiles")
-    .select("first_name, last_name, campus, seller_status, shop_name, is_admin")
-    .eq("id", user.id)
-    .single();
-
-  if (error) {
-    console.error("Could not load profile:", error.message);
-    return null;
-  }
-
-  const first = profile.first_name || user.email.split("@")[0];
-
-  document.getElementById("userName").textContent = first;
-  document.getElementById("headerName").textContent = first;
-  document.getElementById("userAvatar").textContent = initials(profile.first_name, profile.last_name);
-
-  if (profile.campus) {
-    document.getElementById("campusName").textContent = profile.campus + " campus";
-    document.getElementById("campusPill").classList.add("show");
-  }
-  if (profile.is_admin) {
-    document.getElementById("adminLink").hidden = false;
-  }
-  return profile;
-}
-
-// Seller banner
-function showSellerBanner(profile) {
-  const banner = document.getElementById("sellerBanner");
-  if (!banner || !profile) return;
-
-  if (profile.seller_status === "approved") {
-    // Approved sellers: link to their dashboard
-    banner.querySelector("h2").textContent = "Your shop is live 🎉";
-    banner.querySelector("p").textContent = "Add listings, update their status and reply to enquiries in your seller dashboard.";
-
-    const button = banner.querySelector("a");
-    button.href = "dashboard.html";
-    button.textContent = "Open seller dashboard";
-
-    document.getElementById("dashboardLink").hidden = false;
-  } else if (profile.seller_status === "pending") {
-    banner.querySelector("h2").textContent = "Your shop is under review";
-    banner.querySelector("p").textContent = "The Incubation Hub is checking your application. You'll be able to add listings once you're approved.";
-    banner.querySelector("a").style.display = "none";
-  }
-}
-
-// Stats
-async function countRows(query) {
-  const { count, error } = await query;
-  if (error) {
-    console.error("Count failed:", error.message);
-    return 0;
-  }
-  return count ?? 0;
-}
-
-async function loadStats(user) {
-  const [sent, replies, listings, sellers] = await Promise.all([
-    countRows(
-      supabaseClient.from("enquiries").select("*", { count: "exact", head: true })
-        .eq("buyer_id", user.id)
-    ),
-    countRows(
-      supabaseClient.from("enquiries").select("*", { count: "exact", head: true })
-        .eq("buyer_id", user.id)
-        .eq("status", "replied")
-    ),
-    countRows(
-      supabaseClient.from("listings").select("*", { count: "exact", head: true })
-        .eq("status", "active")
-    ),
-    countRows(
-      supabaseClient.from("profiles").select("*", { count: "exact", head: true })
-        .eq("seller_status", "approved")
-    )
+    loadActiveOrders(user),
+    loadJustListed(),
+    loadCampusListings(profile),
+    loadEnquiries(user)
   ]);
 
-  document.getElementById("statEnquiries").textContent = sent;
-  document.getElementById("statReplies").textContent = replies;
-  document.getElementById("statListings").textContent = listings;
-  document.getElementById("statSellers").textContent = sellers;
-}
-
-// Your enquiries (STATUS_LABELS lives in main.js)
-async function loadEnquiries(user) {
-  const list = document.getElementById("enquiryList");
-
-  const { data: enquiries, error } = await supabaseClient
-    .from("enquiries")
-    .select(`
-      id,
-      status,
-      seller_reply,
-      listing:listings ( id, title ),
-      seller:profiles!enquiries_seller_id_fkey ( first_name, last_name )
-    `)
-    .eq("buyer_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(5);
-
-  if (error) {
-    list.innerHTML = `<p class="empty-state">We couldn't load your enquiries. Please refresh the page.</p>`;
-    console.error("Could not load enquiries:", error.message);
-    return;
-  }
-
-  if (enquiries.length === 0) {
-    list.innerHTML = `
-      <p class="empty-state">
-        You haven't sent any enquiries yet.
-        <a href="browse.html">Browse the marketplace</a> to find something you like.
-      </p>`;
-    return;
-  }
-
-  list.innerHTML = enquiries.map((enquiry) => {
-    const title = enquiry.listing ? enquiry.listing.title : "Listing no longer available";
-    const seller = enquiry.seller || {};
-    const sellerName = `${seller.first_name || "Seller"} ${(seller.last_name || "").charAt(0)}.`;
-    const link = enquiry.listing ? `listing.html?id=${enquiry.listing.id}` : "browse.html";
-
-    return `
-      <div class="enquiry-row">
-        <span class="avatar">${escapeHtml(initials(seller.first_name, seller.last_name))}</span>
-        <div class="enquiry-info">
-          <strong>${escapeHtml(title)}</strong>
-          <span>${escapeHtml(sellerName)}</span>
-          ${enquiry.seller_reply ? `<span class="enquiry-reply">💬 ${escapeHtml(enquiry.seller_reply)}</span>` : ""}
-        </div>
-        <span class="status-pill status-${enquiry.status}">${STATUS_LABELS[enquiry.status]}</span>
-        <a href="${link}" class="enquiry-link">View</a>
-      </div>`;
-  }).join("");
-}
-
-// Your orders (buyer). ORDER_STATUS_LABELS lives in main.js
-async function loadOrders(user) {
-  const list = document.getElementById("orderList");
-
-  const { data: orders, error } = await supabaseClient
-    .from("orders")
-    .select(`
-      id, amount, status, created_at, dispute_reason,
-      listing:listings ( id, title ),
-      seller:profiles!orders_seller_id_fkey ( first_name, last_name, shop_name )
-    `)
-    .eq("buyer_id", user.id)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    list.innerHTML = `<p class="empty-state">We couldn't load your orders. Please refresh the page.</p>`;
-    console.error("Could not load orders:", error.message);
-    return;
-  }
-
-  if (orders.length === 0) {
-    list.innerHTML = `
-      <p class="empty-state">
-        No orders yet. <a href="browse.html">Browse the marketplace</a> to find something you like.
-      </p>`;
-    return;
-  }
-
-  list.innerHTML = orders.map(renderBuyerOrder).join("");
-}
-
-function renderBuyerOrder(order) {
-  const seller = order.seller || {};
-  const sellerName = seller.shop_name || `${seller.first_name || "Seller"} ${(seller.last_name || "").charAt(0)}.`;
-  const title = order.listing ? order.listing.title : "Listing no longer available";
-  const amount = formatPrice(order.amount);
-  const date = new Date(order.created_at).toLocaleDateString("en-ZA", { day: "numeric", month: "short" });
-
-  // What the buyer sees depends on the status
-  let details = "";
-
-  if (order.status === "pending_payment") {
-    details = `
-      <p class="order-note">This order isn't confirmed until you pay.</p>
-      <div class="inbox-actions">
-        <button type="button" class="btn btn-mint btn-sm" data-action="pay">Pay ${amount} (demo)</button>
-        <button type="button" class="btn btn-ghost btn-sm" data-action="cancel">Cancel order</button>
-      </div>`;
-  } else if (order.status === "paid_in_escrow" || order.status === "delivered") {
-    const note = order.status === "paid_in_escrow"
-      ? `💰 ${amount} is held in escrow. Meet the seller on campus to collect.`
-      : `📦 The seller says this was delivered. Confirm to release ${amount} to them.`;
-
-    details = `
-      <p class="order-note">${note}</p>
-      <div class="inbox-actions">
-        <button type="button" class="btn btn-mint btn-sm" data-action="confirm">I received it</button>
-        <button type="button" class="btn btn-ghost btn-sm" data-action="report">Report a problem</button>
-      </div>
-      <form class="reply-form dispute-form" hidden>
-        <textarea rows="2" maxlength="500" placeholder="What went wrong? e.g. The seller didn't show up." aria-label="Describe the problem"></textarea>
-        <button type="submit" class="btn btn-indigo btn-sm">Send to the Hub</button>
-      </form>`;
-  } else if (order.status === "disputed") {
-    details = `
-      <p class="order-note warning">
-        ⚠️ The Incubation Hub is reviewing this order. Your money stays in escrow until it's resolved.
-        ${order.dispute_reason ? `<br>Reason: ${escapeHtml(order.dispute_reason)}` : ""}
-      </p>`;
-  } else if (order.status === "completed") {
-    details = `<p class="order-note">✓ ${amount} released to the seller.</p>`;
-  } else if (order.status === "refunded") {
-    details = `<p class="order-note">↩ ${amount} refunded to you.</p>`;
-  }
-
-  return `
-    <div class="inbox-item" data-order-id="${order.id}">
-      <div class="inbox-head">
-        <span class="avatar">${escapeHtml(initials(seller.first_name, seller.last_name))}</span>
-        <div class="enquiry-info">
-          <strong>${escapeHtml(title)}</strong>
-          <span>Order #${order.id} · ${escapeHtml(sellerName)} · ${date}</span>
-        </div>
-        <span class="order-amount">${amount}</span>
-        <span class="status-pill status-${order.status}">${ORDER_STATUS_LABELS[order.status]}</span>
-      </div>
-      ${details}
-    </div>`;
-}
-
-// Order buttons (one listener for every order)
-function setupOrderActions(user) {
-  const list = document.getElementById("orderList");
-  const message = document.getElementById("ordersMessage");
-  if (!list) return;
-
-  const SUCCESS_TEXT = {
-    pay: "Payment received 🎉 Your money is held safely in escrow.",
-    cancel: "Order cancelled.",
-    confirm: "Thanks for confirming! The payment has been released to the seller.",
-    dispute: "Problem reported. The Incubation Hub will review this order and contact you."
-  };
-
-  async function runAction(orderId, action, reason = null) {
-    const { error } = await supabaseClient.rpc("order_action", {
-      p_order_id: orderId,
-      p_action: action,
-      p_reason: reason
-    });
+  // ---------- Profile: name, initials, campus, admin link ----------
+  async function loadProfile(user) {
+    const { data: profile, error } = await supabaseClient
+      .from("profiles")
+      .select("first_name, last_name, campus, seller_status, shop_name, is_admin")
+      .eq("id", user.id)
+      .single();
 
     if (error) {
-      showMessage(message, error.message, "error");
-    } else {
-      showMessage(message, SUCCESS_TEXT[action], "success");
+      console.error("Could not load profile:", error.message);
+      return null;
     }
 
-    loadOrders(user);
+    const first = profile.first_name || user.email.split("@")[0];
+
+    document.getElementById("userName").textContent = first;
+    document.getElementById("headerName").textContent = first;
+    document.getElementById("userAvatar").textContent = initials(profile.first_name, profile.last_name);
+
+    if (profile.campus) {
+      document.getElementById("campusName").textContent = profile.campus + " campus";
+      document.getElementById("campusPill").classList.add("show");
+    }
+    if (profile.is_admin) {
+      document.getElementById("adminLink").hidden = false;
+    }
+    return profile;
   }
 
-  // Buttons: pay, cancel, confirm, report
-  list.addEventListener("click", async (e) => {
-    const button = e.target.closest("button[data-action]");
-    if (!button) return;
+  // ---------- Seller status: quick-action tile + banner ----------
+  function showSellerStatus(profile) {
+    if (!profile) return;
 
-    const item = button.closest("[data-order-id]");
-    const orderId = Number(item.dataset.orderId);
-    const action = button.dataset.action;
+    const tile = document.getElementById("qaSell");
+    const tileTitle = document.getElementById("qaSellTitle");
+    const tileSub = document.getElementById("qaSellSub");
+    const banner = document.getElementById("sellerBanner");
 
-    // "Report a problem" just opens the reason box
-    if (action === "report") {
-      const form = item.querySelector(".dispute-form");
-      form.hidden = !form.hidden;
-      if (!form.hidden) form.querySelector("textarea").focus();
+    if (profile.seller_status === "approved") {
+      tile.href = "dashboard.html";
+      tileTitle.textContent = "Seller dashboard";
+      tileSub.textContent = profile.shop_name || "Manage your shop";
+
+      banner.querySelector("h2").textContent = "Your shop is live 🎉";
+      banner.querySelector("p").textContent = "Add listings, update their status and reply to enquiries in your seller dashboard.";
+      const button = banner.querySelector("a");
+      button.href = "dashboard.html";
+      button.textContent = "Open seller dashboard";
+
+      document.getElementById("dashboardLink").hidden = false;
+    } else if (profile.seller_status === "pending") {
+      tile.href = "#sell";
+      tileTitle.textContent = "Shop under review";
+      tileSub.textContent = "The Hub is checking it";
+
+      banner.querySelector("h2").textContent = "Your shop is under review";
+      banner.querySelector("p").textContent = "The Incubation Hub is checking your application. You'll be able to add listings once you're approved.";
+      banner.querySelector("a").hidden = true;
+    }
+  }
+
+  // ---------- Numbers for the quick actions and trust block ----------
+  async function countRows(query) {
+    const { count, error } = await query;
+    if (error) {
+      console.error("Count failed:", error.message);
+      return 0;
+    }
+    return count ?? 0;
+  }
+
+  async function loadStats(user) {
+    const [listings, activeOrders, replies, sellers] = await Promise.all([
+      countRows(
+        supabaseClient.from("listings").select("*", { count: "exact", head: true })
+          .eq("status", "active")
+      ),
+      countRows(
+        supabaseClient.from("orders").select("*", { count: "exact", head: true })
+          .eq("buyer_id", user.id)
+          .in("status", ACTIVE_ORDER_STATUSES)
+      ),
+      countRows(
+        supabaseClient.from("enquiries").select("*", { count: "exact", head: true })
+          .eq("buyer_id", user.id)
+          .eq("status", "replied")
+      ),
+      countRows(
+        supabaseClient.from("profiles").select("*", { count: "exact", head: true })
+          .eq("seller_status", "approved")
+      )
+    ]);
+
+    document.getElementById("qaListings").textContent = listings;
+    document.getElementById("qaOrders").textContent = activeOrders;
+    document.getElementById("qaReplies").textContent = replies;
+    document.getElementById("trustSellers").textContent = sellers;
+  }
+
+  // ---------- Orders in progress (preview only; actions live on orders.html) ----------
+  async function loadActiveOrders(user) {
+    const section = document.getElementById("inProgress");
+    const list = document.getElementById("activeOrders");
+
+    const { data: orders, error } = await supabaseClient
+      .from("orders")
+      .select(`
+        id, amount, status,
+        listing:listings ( title ),
+        seller:profiles!orders_seller_id_fkey ( first_name, last_name, shop_name )
+      `)
+      .eq("buyer_id", user.id)
+      .in("status", ACTIVE_ORDER_STATUSES)
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    if (error) {
+      console.error("Could not load orders:", error.message);
+      return;
+    }
+    if (orders.length === 0) return; // section stays hidden
+
+    list.innerHTML = orders.map((order) => {
+      const seller = order.seller || {};
+      const sellerName = seller.shop_name || `${seller.first_name || "Seller"} ${(seller.last_name || "").charAt(0)}.`;
+      const title = order.listing ? order.listing.title : "Listing no longer available";
+
+      return `
+        <a href="orders.html" class="progress-item">
+          <span class="avatar">${escapeHtml(initials(seller.first_name, seller.last_name))}</span>
+          <span class="progress-info">
+            <strong>${escapeHtml(title)}</strong>
+            <small>${escapeHtml(sellerName)} · ${NEXT_STEP[order.status]}</small>
+          </span>
+          <span class="order-amount">${formatPrice(order.amount)}</span>
+          <span class="status-pill status-${order.status}">${ORDER_STATUS_LABELS[order.status]}</span>
+        </a>`;
+    }).join("");
+
+    section.hidden = false;
+  }
+
+  // ---------- Just listed on the Hub ----------
+  async function loadJustListed() {
+    const grid = document.getElementById("justListed");
+
+    const { data: listings, error } = await supabaseClient
+      .from("listings")
+      .select(LISTING_FIELDS)
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    if (error) {
+      grid.innerHTML = `<p class="empty-state">We couldn't load listings. Please refresh the page.</p>`;
+      console.error("Could not load listings:", error.message);
       return;
     }
 
-    // Releasing money can't be undone, so double-check
-    if (action === "confirm") {
-      const ok = confirm("Have you received this order? Confirming releases the payment to the seller and can't be undone.");
-      if (!ok) return;
-    }
-
-    button.disabled = true;
-    await runAction(orderId, action);
-  });
-
-  // Sending a problem report
-  list.addEventListener("submit", async (e) => {
-    if (!e.target.classList.contains("dispute-form")) return;
-    e.preventDefault();
-
-    const form = e.target;
-    const textarea = form.querySelector("textarea");
-    const reason = textarea.value.trim();
-
-    if (reason === "") {
-      textarea.focus();
+    if (listings.length === 0) {
+      grid.innerHTML = `<p class="empty-state">No listings yet. Check back soon!</p>`;
       return;
     }
 
-    const orderId = Number(form.closest("[data-order-id]").dataset.orderId);
-    form.querySelector("button").disabled = true;
-    await runAction(orderId, "dispute", reason);
-  });
-}
-
-// Just listed on the Hub
-async function loadJustListed() {
-  const grid = document.getElementById("justListed");
-
-  const { data: listings, error } = await supabaseClient
-    .from("listings")
-    .select(`
-      id, title, description, type, price, price_unit,
-      seller:profiles ( first_name, last_name )
-    `)
-    .eq("status", "active")
-    .order("created_at", { ascending: false })
-    .limit(3);
-
-  if (error) {
-    grid.innerHTML = `<p class="empty-state">We couldn't load listings. Please refresh the page.</p>`;
-    console.error("Could not load listings:", error.message);
-    return;
+    grid.innerHTML = listings.map((listing, index) => renderListingCard(listing, index)).join("");
   }
 
-  if (listings.length === 0) {
-    grid.innerHTML = `<p class="empty-state">No listings yet. Check back soon!</p>`;
-    return;
+  // ---------- On your campus ----------
+  async function loadCampusListings(profile) {
+    if (!profile || !profile.campus) return;
+
+    const section = document.getElementById("campusSection");
+    const grid = document.getElementById("campusListings");
+
+    const { data: listings, error } = await supabaseClient
+      .from("listings")
+      .select(LISTING_FIELDS)
+      .eq("status", "active")
+      .eq("campus", profile.campus)
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    if (error) {
+      console.error("Could not load campus listings:", error.message);
+      return;
+    }
+    if (listings.length === 0) return; // section stays hidden
+
+    document.getElementById("campusHeading").textContent = `On the ${profile.campus} campus`;
+    document.getElementById("campusLink").href = `browse.html?campus=${encodeURIComponent(profile.campus)}`;
+    grid.innerHTML = listings.map((listing, index) => renderListingCard(listing, index)).join("");
+    section.hidden = false;
   }
 
-  grid.innerHTML = listings.map((listing, index) => renderListingCard(listing, index)).join("");
+  // ---------- Your messages (STATUS_LABELS lives in main.js) ----------
+  async function loadEnquiries(user) {
+    const list = document.getElementById("enquiryList");
 
-  const firstCard = grid.querySelector(".listing-card");
-  if (firstCard) firstCard.classList.add("lead");
-}
+    const { data: enquiries, error } = await supabaseClient
+      .from("enquiries")
+      .select(`
+        id,
+        status,
+        seller_reply,
+        listing:listings ( id, title ),
+        seller:profiles!enquiries_seller_id_fkey ( first_name, last_name )
+      `)
+      .eq("buyer_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(4);
 
-// Log out
-const logoutBtn = document.getElementById("logoutBtn");
+    if (error) {
+      list.innerHTML = `<p class="empty-state">We couldn't load your messages. Please refresh the page.</p>`;
+      console.error("Could not load enquiries:", error.message);
+      return;
+    }
 
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", logout);
-}
+    if (enquiries.length === 0) {
+      list.innerHTML = `
+        <p class="empty-state">
+          You haven't messaged any sellers yet.
+          <a href="browse.html">Browse the marketplace</a> and ask about something you like.
+        </p>`;
+      return;
+    }
+
+    list.innerHTML = enquiries.map((enquiry) => {
+      const title = enquiry.listing ? enquiry.listing.title : "Listing no longer available";
+      const seller = enquiry.seller || {};
+      const sellerName = `${seller.first_name || "Seller"} ${(seller.last_name || "").charAt(0)}.`;
+      const link = enquiry.listing ? `listing.html?id=${enquiry.listing.id}` : "browse.html";
+
+      return `
+        <div class="enquiry-row">
+          <span class="avatar">${escapeHtml(initials(seller.first_name, seller.last_name))}</span>
+          <div class="enquiry-info">
+            <strong>${escapeHtml(title)}</strong>
+            <span>${escapeHtml(sellerName)}</span>
+            ${enquiry.seller_reply ? `<span class="enquiry-reply">💬 ${escapeHtml(enquiry.seller_reply)}</span>` : ""}
+          </div>
+          <span class="status-pill status-${enquiry.status}">${STATUS_LABELS[enquiry.status]}</span>
+          <a href="${link}" class="enquiry-link">View</a>
+        </div>`;
+    }).join("");
+  }
+})();

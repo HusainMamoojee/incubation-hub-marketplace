@@ -6,26 +6,27 @@
   <title>Seller dashboard | Hub Market</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="css/auth.css">
 </head>
 
-<body class="home-page" data-protected>
+<body class="home-page seller-page" data-protected>
 
 <header class="site-header">
   <nav class="container nav">
 
-    <a href="home.html" class="logo">
-      <span class="logo-mark">HM</span>
-      <span>Hub Market<small>EDUVOS INCUBATION HUB</small></span>
+    <a href="home.html" class="logo" aria-label="Hub Market home">
+      <img src="assets/logo.svg" alt="" class="logo-mark" width="38" height="38">
+      <span class="logo-text"><strong>Hub Market</strong><small>by Eduvos Incubation Hub</small></span>
     </a>
 
     <ul class="nav-links" id="navLinks">
       <li><a href="home.html">Home</a></li>
       <li><a href="browse.html">Browse</a></li>
-      <li><a href="dashboard.html">Seller dashboard</a></li>
+      <li><a href="orders.html">My orders</a></li>
+      <li><a href="dashboard.html" class="active">Seller dashboard</a></li>
     </ul>
 
     <div class="nav-actions">
@@ -42,67 +43,117 @@
 
 <main>
 
-  <section class="dash-hero">
+  <!-- ========== SHOP HEADER + STATS ========== -->
+  <section class="dash-hero seller-hero">
     <div class="container">
+
       <div class="dash-top">
         <div class="dash-title">
+          <span class="seller-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>
+            Hub-verified seller
+          </span>
           <h1 id="shopTitle">My shop</h1>
-          <span class="verified">✓ Hub-verified seller</span>
+          <p class="home-sub" id="shopSub">Manage your orders, listings and messages in one place.</p>
         </div>
+
+        <button type="button" class="btn btn-mint" id="heroAddListing">+ Add listing</button>
       </div>
-            <div class="stat-cards">
-        <div class="stat-card">
+
+      <div class="seller-stats">
+        <div class="seller-stat">
+          <span class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          </span>
           <small>Held in escrow</small>
           <strong id="statEscrow">–</strong>
+          <span class="stat-hint">Paid, waiting to be released</span>
         </div>
-        <div class="stat-card">
+        <div class="seller-stat">
+          <span class="stat-icon icon-mint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
           <small>Released to you</small>
           <strong id="statReleased">–</strong>
+          <span class="stat-hint">From completed orders</span>
         </div>
-        <div class="stat-card">
-          <small>Orders to fulfil</small>
+        <div class="seller-stat">
+          <span class="stat-icon icon-amber">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          </span>
+          <small>Orders to hand over</small>
           <strong id="statToFulfil">–</strong>
+          <span class="stat-hint">Paid and ready to deliver</span>
         </div>
-        <div class="stat-card">
+        <div class="seller-stat">
+          <span class="stat-icon icon-violet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M5 13v7h14v-7"/></svg>
+          </span>
           <small>Active listings</small>
           <strong id="statActiveListings">–</strong>
+          <span class="stat-hint">Visible on Browse</span>
         </div>
       </div>
+
     </div>
   </section>
 
-    <section class="dash-section" id="sellerOrders">
+  <!-- ========== TABS ========== -->
+  <div class="container">
+    <div class="seller-tabs" role="tablist" aria-label="Seller dashboard sections">
+      <button type="button" class="seller-tab active" role="tab" data-tab="sellerOrders" aria-selected="true">
+        Orders <span class="tab-count" id="countOrders" hidden></span>
+      </button>
+      <button type="button" class="seller-tab" role="tab" data-tab="myShop" aria-selected="false">
+        Listings <span class="tab-count muted" id="countListings" hidden></span>
+      </button>
+      <button type="button" class="seller-tab" role="tab" data-tab="inbox" aria-selected="false">
+        Enquiries <span class="tab-count" id="countEnquiries" hidden></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========== ORDERS ========== -->
+  <section class="dash-section seller-panel" id="sellerOrders" role="tabpanel">
     <div class="container">
 
       <div class="section-head">
         <div>
-          <span class="eyebrow">Escrow orders</span>
-          <h2>Orders to fulfil</h2>
-          <p>🔒 Buyers' money is held in escrow and released to you once they confirm they've received it.</p>
+          <h2>Orders</h2>
+          <p>Buyers' money is held in escrow and released to you once they confirm they've received it.</p>
         </div>
       </div>
 
       <div class="form-message" id="sellerOrdersMessage" role="status"></div>
+
+      <h3 class="panel-subhead">Needs your attention</h3>
       <div class="enquiry-list" id="sellerOrderList">
         <p class="empty-state">Loading your orders...</p>
       </div>
 
+      <details class="past-orders" id="pastOrders" hidden>
+        <summary>Past orders <span id="pastCount"></span></summary>
+        <div class="enquiry-list" id="pastOrderList"></div>
+      </details>
+
     </div>
   </section>
 
-  <section class="dash-section" id="myShop">
+  <!-- ========== LISTINGS ========== -->
+  <section class="dash-section seller-panel" id="myShop" role="tabpanel" hidden>
     <div class="container">
 
       <div class="section-head">
         <div>
-          <span class="eyebrow">Your shop</span>
           <h2>Your listings</h2>
+          <p>Hide a listing to take a break, or mark it sold when it's gone.</p>
         </div>
         <button type="button" class="btn btn-indigo" id="openAddListing">+ Add listing</button>
       </div>
 
       <form class="auth-form shop-form" id="addListingForm" hidden novalidate>
 
+        <h3 class="form-title">New listing</h3>
         <div class="form-message" id="listingMessage" role="status"></div>
 
         <div class="field">
@@ -163,7 +214,20 @@
         <p class="empty-state">Loading your listings...</p>
       </div>
 
-      <h3 class="shop-subhead">Incoming enquiries</h3>
+    </div>
+  </section>
+
+  <!-- ========== ENQUIRIES ========== -->
+  <section class="dash-section seller-panel" id="inbox" role="tabpanel" hidden>
+    <div class="container">
+
+      <div class="section-head">
+        <div>
+          <h2>Enquiries</h2>
+          <p>Questions from students about your listings. Reply with a time and place to meet.</p>
+        </div>
+      </div>
+
       <div class="form-message" id="inboxMessage" role="status"></div>
       <div class="enquiry-list" id="incomingEnquiries">
         <p class="empty-state">Loading enquiries...</p>
@@ -192,6 +256,3 @@
   <script src="js/dashboard.js"></script>
 </body>
 </html>
-
-
-
