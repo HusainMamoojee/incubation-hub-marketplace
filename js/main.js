@@ -1,13 +1,21 @@
 // Shared scripts for every page
 
-// ---------- Footer year ----------
+//Only will allow  photo links from own SupaBase stroage bucket
+//This will also stop someone from saving unsafe links and running scripts through images
+function safeImageUrl(url) {
+  if( typeof url !== "string") return"";
+  const prefix = SUPABASE_URL + "/storage/v1/object/public/listing-images/";
+  return url.startsWith(prefix) && !/["'<>\s]/.test(url) ? url : "";
+}
+
+//Footer year 
 const year = document.getElementById("year");
 
 if (year) {
   year.textContent = new Date().getFullYear();
 }
 
-// ---------- Search chips ----------
+// Search chips 
 const searchInput = document.getElementById("searchInput");
 const searchForm = document.getElementById("searchForm");
 const chips = document.querySelectorAll(".chip");
@@ -21,7 +29,7 @@ chips.forEach((chip) => {
   });
 });
 
-// ---------- Mobile menu ----------
+//Mobile menu 
 const menuToggle = document.getElementById("menuToggle");
 const navLinks = document.getElementById("navLinks");
 
@@ -34,7 +42,7 @@ if (menuToggle && navLinks) {
 }
 
 
-// ---------- Shared helpers (used by home, browse, listing pages) ----------
+//Shared helpers (used by home, browse, listing pages)
 
 // Make user-typed text safe to put inside HTML
 function escapeHtml(text) {
@@ -54,7 +62,7 @@ function initials(first, last) {
   return ((first || "").charAt(0) + (last || "").charAt(0)).toUpperCase() || "?";
 }
 
-// (I) Zeke moved the const status lables to the main js.
+// moved the const status lables to the main js.
 
 const STATUS_LABELS = {
   new: "Awaiting reply",
@@ -76,7 +84,7 @@ const ORDER_STATUS_LABELS = {
   cancelled: "Cancelled"
 };
 
-// ---------- Header: add a shadow once the page scrolls ----------
+// Header: add a shadow once the page scrolls 
 const siteHeader = document.querySelector(".site-header");
 
 if (siteHeader) {

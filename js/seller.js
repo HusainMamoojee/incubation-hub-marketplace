@@ -15,7 +15,7 @@ async function loadShop(user, profile) {
   ]);
 }
 
-// ---------- Tab badges: the little numbers next to Orders / Listings / Enquiries ----------
+// Tab badges: the little numbers next to Orders / Listings / Enquiries 
 function setTabCount(id, count) {
   const badge = document.getElementById(id);
   if (!badge) return;
@@ -23,13 +23,13 @@ function setTabCount(id, count) {
   badge.hidden = count === 0;
 }
 
-// ---------- Your listings ----------
+//  Your listings 
 async function loadMyListings(user) {
   const box = document.getElementById("myListings");
 
   const { data: listings, error } = await supabaseClient
     .from("listings")
-    .select("id, title, type, category, price, price_unit, status")
+    .select("id, title, type, category, price, price_unit, status, image_url")
     .eq("seller_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -49,30 +49,36 @@ async function loadMyListings(user) {
     return;
   }
 
-  box.innerHTML = listings.map((listing) => `
-    <div class="enquiry-row listing-row is-${listing.status}" data-listing-id="${listing.id}">
-      <span class="listing-dot" aria-hidden="true"></span>
-      <div class="enquiry-info">
-        <strong>${escapeHtml(listing.title)}</strong>
-        <span>
-          ${listing.type === "service" ? "Service" : "Product"} ·
-          ${escapeHtml(listing.category || "Other")}
+  box.innerHTML = listings.map((listing) => {
+    const photo = safeImageUrl(listing.image_url);
+
+    return `
+      <div class="enquiry-row listing-row is-${listing.status}" data-listing-id="${listing.id}">
+        <span class="listing-thumb ph-${(listing.id % 3) + 1}">
+          ${photo ? `<img src="${photo}" alt="" loading="lazy">` : ""}
+          <span class="listing-dot" aria-hidden="true"></span>
         </span>
-      </div>
-      <span class="order-amount">
-        ${formatPrice(listing.price)}${listing.price_unit ? `<small>/${escapeHtml(listing.price_unit)}</small>` : ""}
-      </span>
-      <select class="listing-status" aria-label="Status of ${escapeHtml(listing.title)}">
-        <option value="active" ${listing.status === "active" ? "selected" : ""}>Active</option>
-        <option value="hidden" ${listing.status === "hidden" ? "selected" : ""}>Hidden</option>
-        <option value="sold" ${listing.status === "sold" ? "selected" : ""}>Sold</option>
-      </select>
-      <a href="listing.html?id=${listing.id}" class="enquiry-link">View</a>
-    </div>
-  `).join("");
+        <div class="enquiry-info">
+          <strong>${escapeHtml(listing.title)}</strong>
+          <span>
+            ${listing.type === "service" ? "Service" : "Product"} ·
+            ${escapeHtml(listing.category || "Other")}
+          </span>
+        </div>
+        <span class="order-amount">
+          ${formatPrice(listing.price)}${listing.price_unit ? `<small>/${escapeHtml(listing.price_unit)}</small>` : ""}
+        </span>
+        <select class="listing-status" aria-label="Status of ${escapeHtml(listing.title)}">
+          <option value="active" ${listing.status === "active" ? "selected" : ""}>Active</option>
+          <option value="hidden" ${listing.status === "hidden" ? "selected" : ""}>Hidden</option>
+          <option value="sold" ${listing.status === "sold" ? "selected" : ""}>Sold</option>
+        </select>
+        <a href="listing.html?id=${listing.id}" class="enquiry-link">View</a>
+      </div>`;
+  }).join("");
 }
 
-// ---------- Change a listing's status (one listener for every row) ----------
+// Change a listing's status (one listener for every row) 
 function setupListingActions(user) {
   const box = document.getElementById("myListings");
   const message = document.getElementById("shopMessage");
@@ -103,12 +109,77 @@ function setupListingActions(user) {
   });
 }
 
-// ---------- Add a listing ----------
+// Listing photos
+
+// Shrink big phone photos before uploading (max 1200px, saved as JPEG)
+function resizeImage(file, maxSize = 1200) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    img.onload = () => {
+      const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#FFFFFF"; // white behind see-through PNGs
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(img.src);
+
+      canvas.toBlob(
+        (blob) => (blob ? resolve(blob) : reject(new Error("Could not process that image."))),
+        "image/jpeg",
+        0.85
+      );
+    };
+
+    img.onerror = () => reject(new Error("That file isn't an image we can read."));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+// Upload to Supabase Storage and return the public link
+async function uploadListingPhoto(user, file) {
+  const blob = await resizeImage(file);
+  const path = `${user.id}/${Date.now()}.jpg`;
+  const bucket = supabaseClient.storage.from("listing-images");
+
+  const { error } = await bucket.upload(path, blob, { contentType: "image/jpeg" });
+  if (error) throw error;
+
+  return bucket.getPublicUrl(path).data.publicUrl;
+}
+
+// Add a listing 
 function setupAddListingForm(user, profile) {
   const form = document.getElementById("addListingForm");
   const openBtn = document.getElementById("openAddListing");
   const cancelBtn = document.getElementById("cancelAddListing");
   const box = document.getElementById("listingMessage");
+
+  const photoInput = document.getElementById("listingPhoto");
+  const photoPreview = document.getElementById("photoPreview");
+  const photoText = document.getElementById("photoDropText");
+
+  function resetPhoto() {
+    if (photoPreview.src) URL.revokeObjectURL(photoPreview.src);
+    photoPreview.removeAttribute("src");
+    photoPreview.hidden = true;
+    photoText.hidden = false;
+  }
+
+  // Show a preview as soon as a photo is chosen
+  photoInput.addEventListener("change", () => {
+    const file = photoInput.files[0];
+    resetPhoto();
+    if (!file) return;
+
+    photoPreview.src = URL.createObjectURL(file);
+    photoPreview.hidden = false;
+    photoText.hidden = true;
+  });
 
   function openForm() {
     form.hidden = false;
@@ -118,6 +189,7 @@ function setupAddListingForm(user, profile) {
 
   function closeForm() {
     form.reset();
+    resetPhoto();
     clearErrors(form);
     box.className = "form-message";
     form.hidden = true;
@@ -137,6 +209,7 @@ function setupAddListingForm(user, profile) {
     const price = document.getElementById("listingPrice");
     const unit = document.getElementById("listingUnit");
     const description = document.getElementById("listingDescription");
+    const file = photoInput.files[0];
     let valid = true;
 
     if (title.value.trim().length < 3) {
@@ -151,10 +224,32 @@ function setupAddListingForm(user, profile) {
       setError(price, "Enter a price of R0 or more.");
       valid = false;
     }
+    if (file && !file.type.startsWith("image/")) {
+      setError(photoInput, "Choose a JPG, PNG or WebP image.");
+      valid = false;
+    } else if (file && file.size > 10 * 1024 * 1024) {
+      setError(photoInput, "That photo is too big. Use one under 10 MB.");
+      valid = false;
+    }
     if (!valid) return;
 
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
+
+    // Upload the photo first (if there is one)
+    let imageUrl = null;
+    if (file) {
+      submitBtn.textContent = "Uploading photo...";
+      try {
+        imageUrl = await uploadListingPhoto(user, file);
+      } catch (err) {
+        showMessage(box, "Couldn't upload the photo: " + err.message, "error");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Publish listing";
+        return;
+      }
+    }
+
     submitBtn.textContent = "Publishing...";
 
     const { error } = await supabaseClient.from("listings").insert({
@@ -164,7 +259,8 @@ function setupAddListingForm(user, profile) {
       price: Number(price.value),
       price_unit: unit.value.trim() || null,
       description: description.value.trim(),
-      campus: profile.campus
+      campus: profile.campus,
+      image_url: imageUrl
     });
 
     submitBtn.disabled = false;
@@ -181,7 +277,7 @@ function setupAddListingForm(user, profile) {
   });
 }
 
-// ---------- Incoming enquiries ----------
+// Incoming enquiries 
 async function loadIncomingEnquiries(user) {
   const box = document.getElementById("incomingEnquiries");
 
@@ -256,7 +352,7 @@ function renderInboxItem(enquiry) {
     </div>`;
 }
 
-// ---------- Reply and status buttons (one listener each for every enquiry) ----------
+//  Reply and status buttons (one listener each for every enquiry) 
 function setupInboxActions(user) {
   const box = document.getElementById("incomingEnquiries");
   const message = document.getElementById("inboxMessage");
@@ -312,7 +408,7 @@ function setupInboxActions(user) {
   });
 }
 
-// ---------- Orders to fulfil (seller side of escrow) ----------
+//  Orders to fulfil (seller side of escrow)
 const ESCROW_HELD_STATUSES = ["paid_in_escrow", "delivered", "disputed"];
 
 // Orders that still need something to happen go at the top; the rest go under "Past orders"
@@ -347,7 +443,7 @@ async function loadSellerOrders(user) {
     return;
   }
 
-  // ----- Escrow summary -----
+  //  Escrow summary 
   const held = orders
     .filter((order) => ESCROW_HELD_STATUSES.includes(order.status))
     .reduce((total, order) => total + Number(order.amount), 0);
@@ -366,7 +462,7 @@ async function loadSellerOrders(user) {
   // Badge = orders you need to hand over
   setTabCount("countOrders", toFulfil);
 
-  // ----- Split into open and past orders -----
+  //  Split into open and past orders 
   const openOrders = orders.filter((order) => OPEN_ORDER_STATUSES.includes(order.status));
   const pastOrders = orders.filter((order) => !OPEN_ORDER_STATUSES.includes(order.status));
 

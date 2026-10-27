@@ -12,7 +12,7 @@
     notFound.hidden = false;
   }
 
-  // ---------- 1. Which listing? ----------
+  //  Which listing? 
   const id = Number(new URLSearchParams(window.location.search).get("id"));
 
   if (!Number.isInteger(id) || id <= 0) {
@@ -20,13 +20,13 @@
     return;
   }
 
-  // ---------- 2. Load the user and the listing at the same time ----------
+  // Load the user and the listing at the same time 
   const [user, result] = await Promise.all([
     getCurrentUser(),
     supabaseClient
       .from("listings")
       .select(`
-        id, seller_id, title, description, type, category, price, price_unit, campus, status,
+        id, seller_id, title, description, type, category, price, price_unit, campus, status, image_url,
         seller:profiles ( first_name, last_name, shop_name )
       `)
       .eq("id", id)
@@ -41,14 +41,23 @@
     return;
   }
 
-  // ---------- 3. Fill in the page ----------
+  // Fill in the page 
   const isService = listing.type === "service";
   const seller = listing.seller || {};
   const sellerName = `${seller.first_name || "Seller"} ${(seller.last_name || "").charAt(0)}.`;
 
   document.title = `${listing.title} | Hub Market`;
 
-  document.getElementById("listingImage").classList.add(`ph-${(listing.id % 3) + 1}`);
+ const imageBox = document.getElementById("listingImage");
+  imageBox.classList.add(`ph-${(listing.id % 3) + 1}`);
+
+  const photo = safeImageUrl(listing.image_url);
+  if (photo) {
+    const img = document.createElement("img");
+    img.src = photo;
+    img.alt = listing.title;
+    imageBox.prepend(img);
+  }
 
   const typeTag = document.getElementById("listingTypeTag");
   typeTag.textContent = isService ? "Service" : "Product";
@@ -78,7 +87,7 @@
   loading.hidden = true;
   detail.hidden = false;
 
-  // ---------- 4. Is this the seller's own listing? ----------
+  //  Is this the seller's own listing
   const form = document.getElementById("enquiryForm");
   const messageBox = document.getElementById("formMessage");
   const viewEnquiries = document.getElementById("viewEnquiries");
@@ -90,7 +99,7 @@
     return;
   }
 
-  // ---------- 5. Already enquired? Let them know ----------
+  //  Already enquired? Let them know 
   const { count } = await supabaseClient
     .from("enquiries")
     .select("*", { count: "exact", head: true })
@@ -102,7 +111,7 @@
     viewEnquiries.hidden = false;
   }
 
-  // ---------- 6. Send an enquiry ----------
+  //  Send an enquiry 
   const messageInput = document.getElementById("enquiryMessage");
   const submitBtn = form.querySelector('button[type="submit"]');
 
@@ -139,7 +148,7 @@
     viewEnquiries.hidden = false;
   });
 
-  // ---------- 7. Checkout: place an order, then pay into escrow (demo) ----------
+  //Checkout: place an order, then pay into escrow (demo) 
   const buyBox = document.getElementById("buyBox");
   const buyBtn = document.getElementById("buyBtn");
   const checkoutPanel = document.getElementById("checkoutPanel");
@@ -194,7 +203,7 @@
     resetCheckout();
   });
 
-  // Step 1: place the order
+  //  place the order
   placeOrderBtn.addEventListener("click", async () => {
     placeOrderBtn.disabled = true;
     placeOrderBtn.textContent = "Placing order...";
@@ -218,7 +227,7 @@
     showMessage(checkoutMessage, `Order #${orderId} placed. Pay into escrow to confirm it.`, "success");
   });
 
-  // Step 2: pay into escrow (DEMO: in production this is TradeSafe's payment page)
+  // pay into escrow (DEMO: in production this is TradeSafe's payment page)
   payBtn.addEventListener("click", async () => {
     payBtn.disabled = true;
     payBtn.textContent = "Processing payment...";
