@@ -11,7 +11,7 @@ const filters = {
   sort: params.get("sort") || "newest"
 };
 
-// ---------- Page elements ----------
+// Page elements 
 const typeTabs = document.getElementById("typeTabs");
 const categoryFilter = document.getElementById("categoryFilter");
 const campusFilter = document.getElementById("campusFilter");
@@ -20,7 +20,7 @@ const resultsCount = document.getElementById("resultsCount");
 const clearFiltersBtn = document.getElementById("clearFilters");
 const listingGrid = document.getElementById("listingGrid");
 
-// ---------- Make the controls match the filters ----------
+// Make the controls match the filters 
 function syncControls() {
   searchInput.value = filters.q;
   categoryFilter.value = filters.category;
@@ -35,7 +35,7 @@ function syncControls() {
   clearFiltersBtn.hidden = !anyFilter;
 }
 
-// ---------- Keep the URL in sync, so results can be shared or refreshed ----------
+// Keep the URL in sync, so results can be shared or refreshed
 function updateUrl() {
   const next = new URLSearchParams();
   if (filters.q) next.set("q", filters.q);
@@ -48,7 +48,7 @@ function updateUrl() {
   history.replaceState(null, "", query ? `browse.html?${query}` : "browse.html");
 }
 
-// ---------- Load listings from Supabase ----------
+//  Load listings from Supabase 
 let latestRequest = 0;
 
 async function loadListings() {
@@ -59,7 +59,7 @@ async function loadListings() {
   let query = supabaseClient
     .from("listings")
     .select(
-      "id, title, description, type, category, price, price_unit, campus, seller:profiles ( first_name, last_name )",
+      "id, title, description, type, category, price, price_unit, image_url, seller:profiles ( first_name, last_name )",
       { count: "exact" }
     )
     .eq("status", "active");
@@ -108,14 +108,14 @@ async function loadListings() {
   listingGrid.innerHTML = listings.map((listing, index) => renderListingCard(listing, index)).join("");
 }
 
-// ---------- Apply a change: update URL, buttons, results ----------
+//Apply a change: update URL, buttons, results
 function applyFilters() {
   syncControls();
   updateUrl();
   loadListings();
 }
 
-// ---------- Listen to the controls ----------
+// Listen to the controls 
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
   filters.q = searchInput.value.trim();
@@ -153,6 +153,6 @@ clearFiltersBtn.addEventListener("click", () => {
   applyFilters();
 });
 
-// ---------- First load ----------
+// First load 
 syncControls();
 loadListings();

@@ -4,10 +4,12 @@ function renderListingCard(listing, index = 0) {
   const seller = listing.seller || {};
   const isService = listing.type === "service";
   const sellerName = `${seller.first_name || "Seller"} ${(seller.last_name || "").charAt(0)}.`;
+  const photo = safeImageUrl(listing.image_url);
 
   return `
     <article class="listing-card">
       <div class="listing-img ph-${(index % 3) + 1}">
+        ${photo ? `<img src="${photo}" alt="" loading="lazy">` : ""}
         <span class="tag${isService ? "" : " tag-mint"}">${isService ? "Service" : "Product"}</span>
       </div>
       <div class="listing-body">

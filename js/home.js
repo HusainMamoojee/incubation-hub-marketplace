@@ -2,7 +2,7 @@
 // Wrapped in one function so names can't clash with other scripts.
 
 (async function () {
-  // ---------- Settings for this page ----------
+  // Settings for this page 
   // Orders that still need something to happen
   const ACTIVE_ORDER_STATUSES = ["pending_payment", "paid_in_escrow", "delivered", "disputed"];
 
@@ -16,14 +16,14 @@
 
   // Columns renderListingCard() needs (used by two sections)
   const LISTING_FIELDS = `
-    id, title, description, type, price, price_unit,
+    id, title, description, type, price, price_unit, image_url,
     seller:profiles ( first_name, last_name )
   `;
 
   // Log out
   document.getElementById("logoutBtn").addEventListener("click", logout);
 
-  // ---------- Load the page ----------
+  //  Load the page 
   const user = await getCurrentUser();
   if (!user) return;
 
@@ -39,7 +39,7 @@
     loadEnquiries(user)
   ]);
 
-  // ---------- Profile: name, initials, campus, admin link ----------
+  // Profile: name, initials, campus, admin link
   async function loadProfile(user) {
     const { data: profile, error } = await supabaseClient
       .from("profiles")
@@ -68,7 +68,7 @@
     return profile;
   }
 
-  // ---------- Seller status: quick-action tile + banner ----------
+  // Seller status: quick-action tile + banner 
   function showSellerStatus(profile) {
     if (!profile) return;
 
@@ -100,7 +100,7 @@
     }
   }
 
-  // ---------- Numbers for the quick actions and trust block ----------
+  //  Numbers for the quick actions and trust block 
   async function countRows(query) {
     const { count, error } = await query;
     if (error) {
@@ -138,7 +138,7 @@
     document.getElementById("trustSellers").textContent = sellers;
   }
 
-  // ---------- Orders in progress (preview only; actions live on orders.html) ----------
+  //  Orders in progress (preview only; actions live on orders.html)
   async function loadActiveOrders(user) {
     const section = document.getElementById("inProgress");
     const list = document.getElementById("activeOrders");
@@ -181,7 +181,7 @@
     section.hidden = false;
   }
 
-  // ---------- Just listed on the Hub ----------
+  // Just listed on the Hub 
   async function loadJustListed() {
     const grid = document.getElementById("justListed");
 
@@ -206,7 +206,7 @@
     grid.innerHTML = listings.map((listing, index) => renderListingCard(listing, index)).join("");
   }
 
-  // ---------- On your campus ----------
+  // On your campus 
   async function loadCampusListings(profile) {
     if (!profile || !profile.campus) return;
 
@@ -233,7 +233,7 @@
     section.hidden = false;
   }
 
-  // ---------- Your messages (STATUS_LABELS lives in main.js) ----------
+  // Your messages (STATUS_LABELS lives in main.js)
   async function loadEnquiries(user) {
     const list = document.getElementById("enquiryList");
 
