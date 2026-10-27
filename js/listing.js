@@ -41,6 +41,12 @@
     return;
   }
 
+  // Sold or hidden listings can't be bought. Only their own seller can still open them.
+  if (listing.status !== "active" && (!user || listing.seller_id !== user.id)) {
+    showNotFound();
+    return;
+  }
+
   // Fill in the page 
   const isService = listing.type === "service";
   const seller = listing.seller || {};
@@ -249,7 +255,7 @@
     viewOrderBtn.hidden = false;
     showMessage(
       checkoutMessage,
-      `Payment received 🎉 ${formatPrice(listing.price)} is held safely in escrow. The seller gets paid once you confirm you've received it.`,
+      `Payment received  ${formatPrice(listing.price)} is held safely in escrow. The seller gets paid once you confirm you've received it.`,
       "success"
     );
   });
