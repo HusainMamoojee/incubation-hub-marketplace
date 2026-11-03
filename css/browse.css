@@ -240,3 +240,23 @@
   .browse-section::before { background-size: 220px 220px; }
   .browse-search { padding-left: 16px; }
 }
+
+/* "Can't find it? Pin a request" box when a search has no results */
+.board-prompt {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px 24px;
+  border-radius: var(--radius);
+  background: var(--lavender);
+  border: 1px dashed var(--indigo);
+}
+.board-prompt div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.board-prompt span { color: var(--text-muted); }

@@ -36,8 +36,33 @@
     loadActiveOrders(user),
     loadJustListed(),
     loadCampusListings(profile),
-    loadEnquiries(user)
+    loadEnquiries(user),
+    loadBoardTeaser()
   ]);
+
+    // Looking for board teaser: the 3 newest open requests as mini sticky notes
+  async function loadBoardTeaser() {
+    const { data: requests, count, error } = await supabaseClient
+      .from("requests")
+      .select("id, title, category", { count: "exact" })
+      .eq("status", "open")
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    if (error) {
+      console.error("Could not load the board teaser:", error.message);
+      return;
+    }
+
+    if (count > 0) {
+      document.getElementById("teaserHeading").textContent =
+        `${count} ${count === 1 ? "student is" : "students are"} looking for something right now`;
+    }
+
+    document.getElementById("teaserNotes").innerHTML = requests.map((request) => `
+      <span class="mini-note" data-category="${escapeHtml(request.category)}">${escapeHtml(request.title)}</span>
+    `).join("");
+  }
 
   // Profile: name, initials, campus, admin link
   async function loadProfile(user) {

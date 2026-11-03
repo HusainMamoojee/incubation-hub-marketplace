@@ -98,10 +98,18 @@ async function loadListings() {
 
   if (listings.length === 0) {
     listingGrid.innerHTML = `
-      <p class="empty-state">
+          <p class="empty-state">
         No listings match your search.
         <a href="browse.html">Clear all filters</a> to see everything on the Hub.
-      </p>`;
+      </p>
+      <div class="board-prompt">
+        <div>
+          <strong>Can't find it?</strong>
+          <span>Pin it on the Looking for board and let student sellers come to you.</span>
+        </div>
+        <a href="board.html?ask=${encodeURIComponent(filters.q || "")}" class="btn btn-indigo btn-sm">📌 Pin a request</a>
+      </div>`;
+    
     return;
   }
 

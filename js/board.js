@@ -48,6 +48,13 @@
   const openOffersList = setupOffersList();   // returns a function that opens the "See offers" pop-up
   setupNoteActions();
   await loadRequests();
+    // Came from Browse with no results (board.html?ask=calculator)? Open the form, pre-filled
+  const params = new URLSearchParams(window.location.search);
+  if (params.has("ask")) {
+    document.getElementById("openPost").click();
+    document.getElementById("reqTitle").value = params.get("ask");
+    history.replaceState(null, "", "board.html"); // so a refresh doesn't open it again
+  }
   listenForChanges();
 
   // =========================================================
