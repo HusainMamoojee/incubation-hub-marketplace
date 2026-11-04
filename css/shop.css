@@ -1,0 +1,240 @@
+/* Public shop page + the "Share my shop" pop-up on the dashboard.
+   
+
+/* PUBLIC SHOP PAGE*/
+
+
+/* Anything with the hidden attribute stays hidden, even if a rule below gives it a display */
+.shop-page [hidden],
+.share-dialog [hidden] { display: none !important; }
+
+.shop-loading {
+  padding: 80px 20px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.shop-missing {
+  padding: 96px 20px;
+  text-align: center;
+}
+.shop-missing h1 {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  margin-bottom: 8px;
+}
+.shop-missing p {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.shop-hero {
+  padding: 48px 0 40px;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(124, 58, 237, 0.08), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(110, 231, 183, 0.15), transparent 40%);
+}
+
+.shop-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.shop-avatar {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  background: var(--gradient);
+  color: var(--white);
+  font-size: 2rem;
+  font-weight: 800;
+  box-shadow: var(--shadow);
+}
+
+.shop-info { flex: 1; min-width: 0; }
+
+.shop-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #D1FAE5;
+  color: var(--mint-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.shop-badge svg { width: 14px; height: 14px; }
+
+.shop-info h1 {
+  margin-top: 10px;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+
+.shop-owner {
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.shop-description {
+  margin-top: 14px;
+  max-width: 640px;
+  font-size: 1.02rem;
+}
+
+.shop-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.shop-copy { flex-shrink: 0; }
+
+.shop-login {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
+  padding: 18px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+.shop-login p {
+  flex: 1;
+  min-width: 240px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+.shop-login p strong { color: var(--text); }
+.shop-login-actions { display: flex; gap: 10px; }
+
+.shop-listings { padding: 40px 0 0; }
+.shop-listings .section-head { margin-bottom: 24px; }
+
+.shop-page .empty-state {
+  grid-column: 1 / -1;
+  padding: 32px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.footer-bottom a:hover { color: var(--indigo); }
+
+/*  DASHBOARD: hero buttons + "Share my shop" pop-up */
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.share-dialog {
+  width: min(440px, calc(100% - 32px));
+  max-height: calc(100vh - 32px);
+  margin: auto;
+  padding: 0;
+  border: none;
+  border-radius: 20px;
+  background: var(--white);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+}
+.share-dialog::backdrop {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(3px);
+}
+
+.share-inner { padding: 24px; }
+
+.share-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.share-head h2 { font-size: 1.25rem; }
+.share-head p {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.share-close {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.share-close:hover { color: var(--text); }
+
+.qr-preview {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: 0 auto 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.share-link {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.share-link input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.share-actions {
+  display: flex;
+  gap: 10px;
+}
+.share-actions .btn { flex: 1; }
+
+.share-note {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: #FEF3C7;
+  color: #B45309;
+  font-size: 0.8rem;
+}
+
+/* Smaller screens  */
+@media (max-width: 640px) {
+  .shop-head { flex-wrap: wrap; gap: 16px; }
+  .shop-avatar { width: 68px; height: 68px; font-size: 1.5rem; border-radius: 18px; }
+  .shop-copy { width: 100%; }
+  .shop-login-actions { width: 100%; }
+  .shop-login-actions .btn { flex: 1; }
+}

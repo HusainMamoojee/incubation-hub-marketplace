@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/shop.css">
 </head>
 
 <body class="home-page seller-page" data-protected>
@@ -59,7 +60,10 @@
           <p class="home-sub" id="shopSub">Manage your orders, listings and messages in one place.</p>
         </div>
 
-        <button type="button" class="btn btn-mint" id="heroAddListing">+ Add listing</button>
+        <div class="hero-actions">
+          <button type="button" class="btn btn-ghost" id="shareShopBtn">Share my shop</button>
+          <button type="button" class="btn btn-mint" id="heroAddListing">+ Add listing</button>
+        </div>
       </div>
 
       <div class="seller-stats">
@@ -252,6 +256,33 @@
 
 </main>
 
+<!--  SHARE MY SHOP (pop-up): QR code + link to the public shop page  -->
+<dialog class="share-dialog" id="shareDialog" aria-labelledby="shareTitle">
+  <div class="share-inner">
+    <div class="share-head">
+      <div>
+        <h2 id="shareTitle">Share your shop</h2>
+        <p>Post this QR code on WhatsApp or Instagram. Anyone who scans it sees your shop, no login needed.</p>
+      </div>
+      <button type="button" class="share-close" data-close aria-label="Close">✕</button>
+    </div>
+
+    <canvas class="qr-preview" id="qrCanvas" width="1080" height="1350" role="img" aria-label="QR code for your shop"></canvas>
+
+    <div class="share-link">
+      <input type="text" id="shopLinkInput" readonly aria-label="Your shop link">
+      <button type="button" class="btn btn-ghost btn-sm" id="copyShopLink">Copy link</button>
+    </div>
+
+    <div class="share-actions">
+      <a href="#" class="btn btn-ghost btn-sm" id="openShopLink" target="_blank" rel="noopener">View my shop</a>
+      <button type="button" class="btn btn-indigo btn-sm" id="downloadQr">Download QR</button>
+    </div>
+
+    <p class="share-note" id="shareLocalNote" hidden>You're testing on your own computer, so this link only works here. Once the site is live online, the QR code will work on any phone.</p>
+  </div>
+</dialog>
+
 <footer class="site-footer">
   <div class="container">
 
@@ -307,5 +338,7 @@
   <script src="js/auth.js"></script>
   <script src="js/seller.js"></script>
   <script src="js/dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+  <script src="js/share-shop.js"></script>
 </body>
 </html>
