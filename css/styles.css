@@ -1004,3 +1004,104 @@ body[data-protected]:not(.auth-ready) {
   .listing-thumb { width: 44px; height: 44px; }
   .listing-row .listing-thumb + .enquiry-info { flex-basis: calc(100% - 60px); }
 }
+
+
+/* ---------- Delivery options + handover codes ---------- */
+
+/* Checkout: pick how you get it */
+.delivery-options {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.delivery-options legend {
+  margin-bottom: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.delivery-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  cursor: pointer;
+}
+.delivery-option:has(input:checked) {
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+.delivery-option input { margin-top: 3px; accent-color: var(--indigo); }
+.delivery-option strong { display: block; font-size: 0.9rem; }
+.delivery-option small { color: var(--text-muted); font-size: 0.78rem; }
+.delivery-options:disabled .delivery-option { cursor: default; opacity: 0.7; }
+
+.checkout-total {
+  padding-top: 10px;
+  border-top: 1px solid var(--lavender);
+}
+
+/* Order cards: how it gets to the buyer */
+.order-delivery {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* Buyer: the handover code */
+.handover-code {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px dashed var(--indigo);
+  border-radius: var(--radius-sm);
+  background: var(--lavender);
+}
+.handover-code span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.handover-code strong {
+  color: var(--indigo-dark);
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+.handover-code p {
+  flex: 1;
+  min-width: 200px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+.handover-code b { color: var(--text); }
+
+/* Seller: type in the code */
+.handover-form input {
+  flex: 1;
+  min-width: 0;
+  max-width: 220px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font: inherit;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  outline: none;
+}
+.handover-form input:focus {
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}

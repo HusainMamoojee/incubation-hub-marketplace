@@ -8,7 +8,7 @@
   const list = document.getElementById("orderList");
   const message = document.getElementById("ordersMessage");
 
-  // ---------- Header name and avatar ----------
+  // Header name and avatar 
   const { data: profile } = await supabaseClient
     .from("profiles")
     .select("first_name, last_name")
@@ -20,12 +20,13 @@
     document.getElementById("userAvatar").textContent = initials(profile.first_name, profile.last_name);
   }
 
-  // ---------- Load orders ----------
+  // Load orders 
   async function loadOrders() {
     const { data: orders, error } = await supabaseClient
       .from("orders")
       .select(`
         id, amount, status, created_at, dispute_reason,
+        delivery_method, delivery_fee, delivery_address,
         listing:listings ( id, title ),
         seller:profiles!orders_seller_id_fkey ( first_name, last_name, shop_name )
       `)
@@ -48,10 +49,28 @@
       return;
     }
 
+    // Handover codes: only the buyer can read these (database rule)
+    handoverCodes = new Map();
+    const needCodes = orders
+      .filter((o) => ["paid_in_escrow", "delivered"].includes(o.status) && o.delivery_method !== "courier")
+      .map((o) => o.id);
+
+    if (needCodes.length > 0) {
+      const { data: codes, error: codeError } = await supabaseClient
+        .from("order_handover_codes")
+        .select("order_id, code")
+        .in("order_id", needCodes);
+
+      if (codeError) console.error("Could not load handover codes:", codeError.message);
+      (codes || []).forEach((row) => handoverCodes.set(row.order_id, row.code));
+    }
+
     list.innerHTML = orders.map(renderOrder).join("");
   }
 
-  // ---------- Stats ----------
+  let handoverCodes = new Map();
+
+  // Stats 
   function showOrderStats(orders) {
     const sum = (rows) => rows.reduce((total, order) => total + Number(order.amount), 0);
 
@@ -65,14 +84,16 @@
     document.getElementById("statTotalSpent").textContent = formatPrice(sum(completed));
   }
 
-  // ---------- One order ----------
+  //  One order 
   function renderOrder(order) {
     const seller = order.seller || {};
     const sellerName = seller.shop_name || `${seller.first_name || "Seller"} ${(seller.last_name || "").charAt(0)}.`;
     const title = order.listing ? order.listing.title : "Listing no longer available";
     const link = order.listing ? `listing.html?id=${order.listing.id}` : "browse.html";
-    const amount = formatPrice(order.amount);
+    const amount = formatPrice(orderTotal(order));
     const date = new Date(order.created_at).toLocaleDateString("en-ZA", { day: "numeric", month: "short" });
+    const usesCode = order.delivery_method !== "courier";
+    const code = handoverCodes.get(order.id);
 
     let details = "";
 
@@ -84,12 +105,29 @@
           <button type="button" class="btn btn-ghost btn-sm" data-action="cancel">Cancel order</button>
         </div>`;
     } else if (order.status === "paid_in_escrow" || order.status === "delivered") {
-      const note = order.status === "paid_in_escrow"
-        ? `💰 ${amount} is held in escrow. Meet the seller on campus to collect.`
-        : `📦 The seller says this was delivered. Confirm to release ${amount} to them.`;
+      let note;
+      if (order.status === "delivered") {
+        note = `📦 The seller says this was delivered. Confirm to release ${amount} to them.`;
+      } else if (order.delivery_method === "campus_delivery") {
+        note = `💰 ${amount} is held in escrow. The seller will bring it to you.`;
+      } else if (order.delivery_method === "courier") {
+        note = `💰 ${amount} is held in escrow. Confirm once the courier has delivered it.`;
+      } else {
+        note = `💰 ${amount} is held in escrow. Meet the seller on campus to collect.`;
+      }
+
+      const codeBox = usesCode && code ? `
+        <div class="handover-code">
+          <div>
+            <span>Your handover code</span>
+            <strong>${escapeHtml(code.slice(0, 3))} ${escapeHtml(code.slice(3))}</strong>
+          </div>
+          <p>Only give this to the seller <b>once you have your item</b>. Entering it releases your payment.</p>
+        </div>` : "";
 
       details = `
         <p class="order-note">${note}</p>
+        ${codeBox}
         <div class="inbox-actions">
           <button type="button" class="btn btn-mint btn-sm" data-action="confirm">I received it</button>
           <button type="button" class="btn btn-ghost btn-sm" data-action="report">Report a problem</button>
@@ -121,13 +159,14 @@
           <span class="order-amount">${amount}</span>
           <span class="status-pill status-${order.status}">${ORDER_STATUS_LABELS[order.status]}</span>
         </div>
+        ${deliveryLine(order)}
         ${details}
       </div>`;
   }
 
-  // ---------- Buttons (one listener for every order) ----------
+  //  Buttons (one listener for every order)
   const SUCCESS_TEXT = {
-    pay: "Payment received 🎉 Your money is held safely in escrow.",
+    pay: "Payment received 🎉 Your money is held safely in escrow. Your handover code is shown on the order.",
     cancel: "Order cancelled.",
     confirm: "Thanks for confirming! The payment has been released to the seller.",
     dispute: "Problem reported. The Incubation Hub will review this order and contact you."
@@ -191,7 +230,7 @@
     await runAction(orderId, "dispute", reason);
   });
 
-  // ---------- Go ----------
+
   await loadOrders();
 
   document.getElementById("logoutBtn").addEventListener("click", logout);

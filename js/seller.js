@@ -423,6 +423,7 @@ async function loadSellerOrders(user) {
       .from("orders")
       .select(`
         id, amount, status, created_at, buyer_note, dispute_reason,
+        delivery_method, delivery_fee, delivery_address,
         listing:listings ( title ),
         buyer:profiles!orders_buyer_id_fkey ( first_name, last_name )
       `)
@@ -446,11 +447,11 @@ async function loadSellerOrders(user) {
   //  Escrow summary 
   const held = orders
     .filter((order) => ESCROW_HELD_STATUSES.includes(order.status))
-    .reduce((total, order) => total + Number(order.amount), 0);
+    .reduce((total, order) => total + orderTotal(order), 0);
 
   const released = orders
     .filter((order) => order.status === "completed")
-    .reduce((total, order) => total + Number(order.amount), 0);
+    .reduce((total, order) => total + orderTotal(order), 0);
 
   const toFulfil = orders.filter((order) => order.status === "paid_in_escrow").length;
 
@@ -486,7 +487,8 @@ function renderSellerOrder(order) {
   const buyer = order.buyer || {};
   const buyerName = `${buyer.first_name || "Student"} ${(buyer.last_name || "").charAt(0)}.`;
   const title = order.listing ? order.listing.title : "A listing";
-  const amount = formatPrice(order.amount);
+  const amount = formatPrice(orderTotal(order));
+  const usesCode = order.delivery_method !== "courier";
   const date = new Date(order.created_at).toLocaleDateString("en-ZA", { day: "numeric", month: "short" });
 
   const reportButton = `<button type="button" class="btn btn-ghost btn-sm" data-action="report">Report a problem</button>`;
@@ -496,13 +498,29 @@ function renderSellerOrder(order) {
       <button type="submit" class="btn btn-indigo btn-sm">Send to the Hub</button>
     </form>`;
 
+  // The buyer's secret 6-digit code completes the order (meet-ups and on-campus delivery)
+  const handoverForm = `
+    <form class="reply-form handover-form">
+      <input type="text" inputmode="numeric" autocomplete="off" maxlength="7" placeholder="Buyer's 6-digit code" aria-label="Buyer's handover code">
+      <button type="submit" class="btn btn-mint btn-sm">Complete handover</button>
+    </form>`;
+
   let details = "";
 
   if (order.status === "pending_payment") {
     details = `<p class="order-note">Waiting for the buyer to pay. Don't hand anything over yet.</p>`;
+  } else if (usesCode && (order.status === "paid_in_escrow" || order.status === "delivered")) {
+    const how = order.delivery_method === "campus_delivery"
+      ? `Deliver it to the address above.`
+      : `Meet the buyer on campus.`;
+    details = `
+      <p class="order-note">${amount} is in escrow. ${how} When you hand it over, ask for their 6-digit code and enter it here to get paid.</p>
+      ${handoverForm}
+      <div class="inbox-actions">${reportButton}</div>
+      ${disputeForm}`;
   } else if (order.status === "paid_in_escrow") {
     details = `
-      <p class="order-note">${amount} is in escrow. Hand it over on campus, then mark it as delivered.</p>
+      <p class="order-note">${amount} is in escrow. Send it with a courier to the address above, then mark it as delivered.</p>
       <div class="inbox-actions">
         <button type="button" class="btn btn-mint btn-sm" data-action="deliver">Mark as delivered</button>
         ${reportButton}
@@ -538,6 +556,7 @@ function renderSellerOrder(order) {
         <span class="order-amount">${amount}</span>
         <span class="status-pill status-${order.status}">${ORDER_STATUS_LABELS[order.status]}</span>
       </div>
+      ${deliveryLine(order)}
       ${order.buyer_note ? `<p class="inbox-message">${escapeHtml(order.buyer_note)}</p>` : ""}
       ${details}
     </div>`;
@@ -586,6 +605,46 @@ function setupSellerOrderActions(user) {
 
     button.disabled = true;
     await runAction(orderId, action);
+  });
+
+  // Handover code: the seller types in the buyer's code
+  const HANDOVER_RESULTS = {
+    completed: ["Handover confirmed ✓ The payment has been released to you.", "success"],
+    wrong_code: ["That code doesn't match. Check it with the buyer and try again.", "error"],
+    locked: ["Too many wrong codes, so this handover is locked. The buyer can still confirm in the app, or report a problem.", "error"]
+  };
+
+  list.addEventListener("submit", async (e) => {
+    if (!e.target.classList.contains("handover-form")) return;
+    e.preventDefault();
+
+    const form = e.target;
+    const input = form.querySelector("input");
+    const code = input.value.replace(/\D/g, "");
+
+    if (code.length !== 6) {
+      showMessage(message, "Enter the buyer's 6-digit code.", "error");
+      input.focus();
+      return;
+    }
+
+    const orderId = Number(form.closest("[data-order-id]").dataset.orderId);
+    form.querySelector("button").disabled = true;
+
+    const { data: result, error } = await supabaseClient.rpc("order_action", {
+      p_order_id: orderId,
+      p_action: "handover",
+      p_reason: code
+    });
+
+    if (error) {
+      showMessage(message, error.message, "error");
+    } else {
+      const [text, type] = HANDOVER_RESULTS[result] || ["Something went wrong. Please try again.", "error"];
+      showMessage(message, text, type);
+    }
+
+    loadSellerOrders(user);
   });
 
   list.addEventListener("submit", async (e) => {
