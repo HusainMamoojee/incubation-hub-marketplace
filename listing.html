@@ -97,6 +97,34 @@
                 <strong id="checkoutAmount"></strong>
               </div>
 
+              <!-- How the buyer gets it (products only; services are arranged in person) -->
+              <fieldset class="delivery-options" id="deliveryOptions">
+                <legend>How do you want to get it?</legend>
+                <label class="delivery-option">
+                  <input type="radio" name="delivery" value="meetup" checked>
+                  <span><strong>Meet on campus</strong><small>Free · hand over with a code</small></span>
+                </label>
+                <label class="delivery-option">
+                  <input type="radio" name="delivery" value="campus_delivery">
+                  <span><strong>On-campus delivery</strong><small>+R15 · the seller brings it to you</small></span>
+                </label>
+                <label class="delivery-option">
+                  <input type="radio" name="delivery" value="courier">
+                  <span><strong>Courier (far away)</strong><small>Fee arranged with the courier</small></span>
+                </label>
+              </fieldset>
+
+              <div class="field" id="addressField" hidden>
+                <label for="deliveryAddress">Where should it go?</label>
+                <textarea id="deliveryAddress" rows="2" maxlength="300"></textarea>
+                <span class="field-error"></span>
+              </div>
+
+              <div class="checkout-row checkout-total" id="checkoutTotalRow" hidden>
+                <span>Total to pay</span>
+                <strong id="checkoutTotal"></strong>
+              </div>
+
               <div class="field">
                 <label for="orderNote">Note for the seller (optional)</label>
                 <textarea id="orderNote" rows="2" maxlength="300" placeholder="e.g. Can we meet at the Hub on Thursday?"></textarea>
@@ -106,7 +134,7 @@
 
               <button type="button" class="btn btn-indigo btn-block" id="placeOrderBtn">Place order</button>
               <button type="button" class="btn btn-mint btn-block" id="payBtn" hidden>Pay into escrow (demo)</button>
-              <a href="home.html#orders" class="btn btn-indigo btn-block" id="viewOrderBtn" hidden>View my orders</a>
+              <a href="orders.html" class="btn btn-indigo btn-block" id="viewOrderBtn" hidden>View my orders</a>
               <button type="button" class="btn btn-ghost btn-block" id="cancelCheckoutBtn">Cancel</button>
 
               <p class="demo-note">Demo mode: no real money is taken. In production, payments are held by TradeSafe escrow.</p>

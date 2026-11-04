@@ -166,12 +166,59 @@
   const cancelCheckoutBtn = document.getElementById("cancelCheckoutBtn");
 
   const priceText = formatPrice(listing.price) + (listing.price_unit ? "/" + listing.price_unit : "");
-  const payLabel = `Pay ${formatPrice(listing.price)} into escrow (demo)`;
 
   buyBtn.textContent = isService ? "Book this service" : "Buy now";
   document.getElementById("checkoutItem").textContent = listing.title;
   document.getElementById("checkoutAmount").textContent = priceText;
-  payBtn.textContent = payLabel;
+
+  //  Delivery options (products only) 
+  // The real fee is set by the database (create_order); this is only for showing the total
+  const CAMPUS_DELIVERY_FEE = 15;
+  const ADDRESS_HINTS = {
+    campus_delivery: "e.g. Residence B, room 214, or Block C reception",
+    courier: "Full address for the courier, including the city"
+  };
+
+  const deliveryOptions = document.getElementById("deliveryOptions");
+  const addressField = document.getElementById("addressField");
+  const addressInput = document.getElementById("deliveryAddress");
+  const totalRow = document.getElementById("checkoutTotalRow");
+  const totalText = document.getElementById("checkoutTotal");
+
+  if (isService) deliveryOptions.hidden = true;
+
+  function deliveryMethod() {
+    if (isService) return "meetup";
+    return deliveryOptions.querySelector('input[name="delivery"]:checked').value;
+  }
+
+  function orderTotal() {
+    return Number(listing.price) + (deliveryMethod() === "campus_delivery" ? CAMPUS_DELIVERY_FEE : 0);
+  }
+
+  function payLabel() {
+    return `Pay ${formatPrice(orderTotal())} into escrow (demo)`;
+  }
+
+  function updateDelivery() {
+    const method = deliveryMethod();
+    addressField.hidden = method === "meetup";
+    addressInput.placeholder = ADDRESS_HINTS[method] || "";
+    totalRow.hidden = method !== "campus_delivery";
+    totalText.textContent = formatPrice(orderTotal());
+    payBtn.textContent = payLabel();
+  }
+
+  deliveryOptions.addEventListener("change", updateDelivery);
+  updateDelivery();
+
+  // Clear the "add an address" error as soon as they start typing
+  addressInput.addEventListener("input", () => addressField.classList.remove("invalid"));
+
+  function lockDelivery(locked) {
+    deliveryOptions.disabled = locked;
+    addressInput.disabled = locked;
+  }
 
   let orderId = null;
 
@@ -179,13 +226,16 @@
     orderId = null;
     orderNote.value = "";
     orderNote.disabled = false;
+    addressInput.value = "";
+    lockDelivery(false);
+    clearErrors(checkoutPanel);
     checkoutMessage.className = "form-message";
     placeOrderBtn.hidden = false;
     placeOrderBtn.disabled = false;
     placeOrderBtn.textContent = "Place order";
     payBtn.hidden = true;
     payBtn.disabled = false;
-    payBtn.textContent = payLabel;
+    payBtn.textContent = payLabel();
     viewOrderBtn.hidden = true;
     cancelCheckoutBtn.hidden = false;
     cancelCheckoutBtn.disabled = false;
@@ -211,12 +261,23 @@
 
   //  place the order
   placeOrderBtn.addEventListener("click", async () => {
+    clearErrors(checkoutPanel);
+    const method = deliveryMethod();
+
+    if (method !== "meetup" && addressInput.value.trim() === "") {
+      setError(addressInput, "Add where it should be delivered.");
+      addressInput.focus();
+      return;
+    }
+
     placeOrderBtn.disabled = true;
     placeOrderBtn.textContent = "Placing order...";
 
     const { data: newOrderId, error: orderError } = await supabaseClient.rpc("create_order", {
       p_listing_id: listing.id,
-      p_note: orderNote.value.trim()
+      p_note: orderNote.value.trim(),
+      p_delivery: method,
+      p_address: method === "meetup" ? null : addressInput.value.trim()
     });
 
     if (orderError) {
@@ -228,6 +289,7 @@
 
     orderId = newOrderId;
     orderNote.disabled = true;
+    lockDelivery(true);
     placeOrderBtn.hidden = true;
     payBtn.hidden = false;
     showMessage(checkoutMessage, `Order #${orderId} placed. Pay into escrow to confirm it.`, "success");
@@ -246,16 +308,19 @@
     if (payError) {
       showMessage(checkoutMessage, payError.message, "error");
       payBtn.disabled = false;
-      payBtn.textContent = payLabel;
+      payBtn.textContent = payLabel();
       return;
     }
 
     payBtn.hidden = true;
     cancelCheckoutBtn.hidden = true;
     viewOrderBtn.hidden = false;
+    const paidText = `Payment received. ${formatPrice(orderTotal())} is held safely in escrow.`;
     showMessage(
       checkoutMessage,
-      `Payment received  ${formatPrice(listing.price)} is held safely in escrow. The seller gets paid once you confirm you've received it.`,
+      deliveryMethod() === "courier"
+        ? `${paidText} The seller gets paid once you confirm you've received it.`
+        : `${paidText} Your 6-digit handover code is in My orders. Only give it to the seller once you have your item.`,
       "success"
     );
   });

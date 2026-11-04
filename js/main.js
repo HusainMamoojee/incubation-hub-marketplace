@@ -74,6 +74,25 @@ const STATUS_LABELS = {
 
 
 // Order statuses → friendly labels (used by buyer and seller pages)
+// How an order reaches the buyer, as a short line for order cards
+const DELIVERY_LABELS = {
+  meetup: "Meet on campus",
+  campus_delivery: "On-campus delivery",
+  courier: "Courier delivery"
+};
+
+function deliveryLine(order) {
+  const label = DELIVERY_LABELS[order.delivery_method] || DELIVERY_LABELS.meetup;
+  const fee = Number(order.delivery_fee) > 0 ? ` (+${formatPrice(order.delivery_fee)})` : "";
+  const where = order.delivery_address ? ` to ${escapeHtml(order.delivery_address)}` : "";
+  return `<p class="order-delivery">🚚 ${label}${fee}${where}</p>`;
+}
+
+// Item price + delivery fee
+function orderTotal(order) {
+  return Number(order.amount) + Number(order.delivery_fee || 0);
+}
+
 const ORDER_STATUS_LABELS = {
   pending_payment: "Awaiting payment",
   paid_in_escrow: "Paid · in escrow",
