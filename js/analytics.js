@@ -84,7 +84,7 @@
     const listings = [
       { title: "Java and Python tutoring", category: "Tutoring", views: 412, enquiries: 58, orders: 31, revenue: 3720 },
       { title: "Graduation photoshoot", category: "Photography", views: 298, enquiries: 34, orders: 12, revenue: 2880 },
-      { title: "Homemade samoosas (12 pack)", category: "Food & snacks", views: 365, enquiries: 41, orders: 37, revenue: 2035 },
+      { title: "Second-hand textbook bundle", category: "Other", views: 365, enquiries: 41, orders: 37, revenue: 2035 },
       { title: "Logo and poster design", category: "Design", views: 187, enquiries: 22, orders: 9, revenue: 1620 },
       { title: "Laptop clean-up and setup", category: "Tech help", views: 156, enquiries: 19, orders: 10, revenue: 1200 },
       { title: "Hand-painted tote bags", category: "Fashion", views: 133, enquiries: 12, orders: 7, revenue: 840 }
