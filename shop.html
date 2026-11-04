@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop | Hub Market</title>
+  <meta name="description" content="A student-run shop on Hub Market, the Eduvos Incubation Hub campus marketplace.">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/shop.css">
+</head>
+
+<!-- PUBLIC PAGE: no login needed, so people can open it from a QR code on WhatsApp or Instagram -->
+<body class="shop-page">
+
+<header class="site-header">
+  <nav class="container nav">
+
+    <a href="index.html" class="logo" aria-label="Hub Market home">
+      <img src="assets/logo.svg" alt="" class="logo-mark" width="38" height="38">
+      <span class="logo-text"><strong>Hub Market</strong><small>by Eduvos Incubation Hub</small></span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="browse.html">Browse</a></li>
+      <li><a href="board.html">Looking for</a></li>
+      <li><a href="index.html#how-it-works">How it works</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="register.html" class="btn btn-mint btn-sm">Start selling</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+
+  </nav>
+</header>
+
+<main>
+
+  <!-- Shown while loading -->
+  <p class="shop-loading container" id="shopLoading">Loading shop...</p>
+
+  <!-- Shown if the link is wrong, or the seller isn't approved -->
+  <section class="shop-missing container" id="shopNotFound" hidden>
+    <h1>This shop isn't available</h1>
+    <p>The link may be wrong, or the shop is no longer selling on Hub Market.</p>
+    <a href="index.html" class="btn btn-indigo">Visit Hub Market</a>
+  </section>
+
+  <!-- SHOP HEADER -->
+  <section class="shop-hero" id="shopDetail" hidden>
+    <div class="container">
+
+      <div class="shop-head">
+        <span class="shop-avatar" id="shopAvatar" aria-hidden="true"></span>
+
+        <div class="shop-info">
+          <span class="shop-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>
+            Hub-verified seller
+          </span>
+          <h1 id="shopName"></h1>
+          <p class="shop-owner" id="shopOwner"></p>
+          <p class="shop-description" id="shopDescription"></p>
+          <div class="shop-pills">
+            <span class="pill" id="shopCategory" hidden></span>
+            <span class="pill" id="shopCampus" hidden></span>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-ghost btn-sm shop-copy" id="copyLinkBtn">Copy shop link</button>
+      </div>
+
+      <!-- Only for visitors who aren't logged in -->
+      <div class="shop-login" id="shopLogin" hidden>
+        <p><strong>Eduvos student?</strong> Log in with your student email to buy or message this seller. Payments are held safely in escrow.</p>
+        <div class="shop-login-actions">
+          <a href="login.html" class="btn btn-indigo btn-sm">Log in</a>
+          <a href="register.html" class="btn btn-ghost btn-sm">Create an account</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LISTINGS -->
+  <section class="shop-listings" id="shopListingsSection" hidden>
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="listingsHeading">Listings</h2>
+        </div>
+      </div>
+      <div class="card-grid" id="shopListings"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Hub Market · Eduvos Incubation Hub · Hack Jam 2026</span>
+      <span><a href="index.html">About Hub Market</a></span>
+    </div>
+  </div>
+</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/listing-card.js"></script>
+  <script src="js/shop.js"></script>
+</body>
+</html>
