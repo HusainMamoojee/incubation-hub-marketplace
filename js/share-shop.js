@@ -3,6 +3,12 @@
 // Uses the qrcode-generator library (loaded in dashboard.html).
 // Everything is inside one function, so names can't clash with other scripts.
 
+
+// QR codes and shop links always use this, so they work on any phone,
+// even while you're testing on your own computer (127.0.0.1).
+// If the site moves (e.g. to Netlify), change this one line. Keep the "/" at the end.
+const LIVE_SITE_URL = "https://husainmamoojee.github.io/incubation-hub-marketplace/";
+
 (async function () {
   const openBtn = document.getElementById("shareShopBtn");
   const dialog = document.getElementById("shareDialog");
@@ -13,7 +19,6 @@
   const copyBtn = document.getElementById("copyShopLink");
   const downloadBtn = document.getElementById("downloadQr");
   const openShopLink = document.getElementById("openShopLink");
-  const localNote = document.getElementById("shareLocalNote");
 
   const user = await getCurrentUser();
   if (!user) return;
@@ -26,14 +31,10 @@
 
   const shopName = (profile && (profile.shop_name || `${profile.first_name}'s shop`)) || "My shop";
 
-  // The full web address of this seller's public shop page
-  const shopUrl = new URL(`shop.html?id=${user.id}`, window.location.href).href;
+  // The full web address of this seller's public shop page, on the LIVE site
+  const shopUrl = new URL(`shop.html?id=${user.id}`, LIVE_SITE_URL).href;
   linkInput.value = shopUrl;
   openShopLink.href = shopUrl;
-
-  // On 127.0.0.1 / localhost the link only works on this computer
-  const isLocal = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
-  localNote.hidden = !isLocal;
 
   let drawn = false;
 
@@ -117,22 +118,26 @@
   copyBtn.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(shopUrl);
+      showToast("Shop link copied. Paste it into WhatsApp or Instagram.", "success");
     } catch {
-      linkInput.select();
-      document.execCommand("copy");
+      linkInput.select();   // the browser blocked copying: select it so they can press Ctrl + C
+      showToast("Couldn't copy automatically. The link is selected, so press Ctrl + C.", "error", 6);
     }
-    copyBtn.textContent = "Copied ✓";
-    setTimeout(() => (copyBtn.textContent = "Copy link"), 2000);
   });
 
   // Download the QR card as a PNG 
   downloadBtn.addEventListener("click", () => {
     canvas.toBlob((blob) => {
+      if (!blob) {
+        showToast("Couldn't create the QR image. Please try again.", "error");
+        return;
+      }
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = `${shopName.replace(/[^a-z0-9]+/gi, "-").toLowerCase() || "my-shop"}-qr.png`;
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      showToast("QR code downloaded. Check your Downloads folder.", "success");
     }, "image/png");
   });
 })();

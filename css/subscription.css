@@ -52,9 +52,8 @@
 .plan-lapsed { border-left-color: #DC2626; background: #FEF2F2; }
 .plan-lapsed .plan-badge { background: #FEE2E2; color: #B91C1C; }
 
-#planMessage { margin-top: 12px; }
-
-#planMessage + .level-card { margin-top: 16px; }
+/* Husain's seller level card sits right under the plan card */
+.plan-card + .level-card { margin-top: 16px; }
 
 
 .btn:disabled {

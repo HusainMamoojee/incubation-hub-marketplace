@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/auth.css">
   <link rel="stylesheet" href="css/shop.css">
   <link rel="stylesheet" href="css/subscription.css">
+  <link rel="stylesheet" href="css/notify.css">
 </head>
 
 <body class="home-page seller-page" data-protected>
@@ -69,7 +70,6 @@
 
       <!-- Seller plan: R39 a month, filled in by js/subscription.js -->
       <div class="plan-card" id="planCard" hidden></div>
-      <div class="form-message" id="planMessage" role="status"></div>
 
             <div class="level-card" id="levelCard" hidden></div>
 
@@ -285,8 +285,6 @@
       <a href="#" class="btn btn-ghost btn-sm" id="openShopLink" target="_blank" rel="noopener">View my shop</a>
       <button type="button" class="btn btn-indigo btn-sm" id="downloadQr">Download QR</button>
     </div>
-
-    <p class="share-note" id="shareLocalNote" hidden>You're testing on your own computer, so this link only works here. Once the site is live online, the QR code will work on any phone.</p>
   </div>
 </dialog>
 
@@ -342,6 +340,7 @@
   <script src="js/supabase.js"></script>
   <script src="js/session.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/notify.js"></script>
     <script src="js/badges.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/seller.js"></script>

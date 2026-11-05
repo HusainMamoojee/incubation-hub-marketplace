@@ -94,10 +94,9 @@
   copyBtn.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      copyBtn.textContent = "Link copied ✓";
+      showToast("Shop link copied. Share it with your friends!", "success");
     } catch {
-      copyBtn.textContent = "Copy failed";
+      showToast("Couldn't copy automatically. Copy the address from your browser's address bar.", "error", 6);
     }
-    setTimeout(() => (copyBtn.textContent = "Copy shop link"), 2000);
   });
 })();

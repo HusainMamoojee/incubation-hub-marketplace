@@ -5,7 +5,6 @@
 
 (async function () {
   const card = document.getElementById("planCard");
-  const message = document.getElementById("planMessage");
   if (!card) return;
 
   const PRICE = 39;
@@ -96,7 +95,12 @@
     const button = e.target.closest("#renewPlanBtn");
     if (!button) return;
 
-    const ok = confirm(`Pay R${PRICE} for 30 more days of selling? (Demo: no real money is taken.)`);
+    const ok = await confirmDialog({
+      title: `Renew your plan for R${PRICE}?`,
+      text: "You get 30 more days of selling, added on top of any days you have left. Demo: no real money is taken.",
+      confirmText: `Pay R${PRICE}`,
+      cancelText: "Not now"
+    });
     if (!ok) return;
 
     button.disabled = true;
@@ -105,12 +109,12 @@
     const { data: newUntil, error } = await supabaseClient.rpc("renew_subscription");
 
     if (error) {
-      showMessage(message, "Couldn't renew your plan: " + error.message, "error");
+      showToast("Couldn't renew your plan: " + error.message, "error", 6);
       button.disabled = false;
       return;
     }
 
-    showMessage(message, `Thanks! Your plan is active until ${niceDate(new Date(newUntil))}. ✓`, "success");
+    showToast(`Plan renewed! You're active until ${niceDate(new Date(newUntil))}.`, "success");
     await loadPlan();
 
     // Listings may have just become visible again: refresh the dashboard numbers
