@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="css/auth.css">
   <link rel="stylesheet" href="css/shop.css">
+  <link rel="stylesheet" href="css/subscription.css">
 </head>
 
 <body class="home-page seller-page" data-protected>
@@ -65,6 +66,10 @@
           <button type="button" class="btn btn-mint" id="heroAddListing">+ Add listing</button>
         </div>
       </div>
+
+      <!-- Seller plan: R39 a month, filled in by js/subscription.js -->
+      <div class="plan-card" id="planCard" hidden></div>
+      <div class="form-message" id="planMessage" role="status"></div>
 
             <div class="level-card" id="levelCard" hidden></div>
 
@@ -343,5 +348,6 @@
   <script src="js/dashboard.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
   <script src="js/share-shop.js"></script>
+  <script src="js/subscription.js"></script>
 </body>
 </html>
