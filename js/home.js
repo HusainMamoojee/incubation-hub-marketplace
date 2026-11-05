@@ -16,7 +16,7 @@
 
   // Columns renderListingCard() needs (used by two sections)
   const LISTING_FIELDS = `
-    id, title, description, type, price, price_unit, image_url,
+    id,seller_id, title, description, type, price, price_unit, image_url,
     seller:profiles ( first_name, last_name )
   `;
 
