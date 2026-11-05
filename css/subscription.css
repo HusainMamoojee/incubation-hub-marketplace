@@ -1,0 +1,68 @@
+/* Seller plan card on the dashboard */
+
+.plan-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-top: 28px;
+  padding: 18px 22px;
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  background: var(--white);
+}
+.plan-card[hidden] { display: none; }
+
+.plan-text {
+  flex: 1;
+  min-width: 240px;
+}
+.plan-text strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.05rem;
+}
+.plan-text p {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.plan-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Active: calm mint */
+.plan-active { border-left-color: var(--mint-dark); }
+.plan-active .plan-badge { background: #D1FAE5; color: var(--mint-dark); }
+
+/* Ending soon: amber */
+.plan-warning { border-left-color: #F59E0B; background: #FFFBEB; }
+.plan-warning .plan-badge { background: #FEF3C7; color: #B45309; }
+
+/* Ended: red */
+.plan-lapsed { border-left-color: #DC2626; background: #FEF2F2; }
+.plan-lapsed .plan-badge { background: #FEE2E2; color: #B91C1C; }
+
+#planMessage { margin-top: 12px; }
+
+#planMessage + .level-card { margin-top: 16px; }
+
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 560px) {
+  .plan-card .btn { width: 100%; }
+}
