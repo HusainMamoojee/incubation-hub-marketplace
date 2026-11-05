@@ -11,6 +11,8 @@ function renderListingCard(listing, index = 0) {
       <div class="listing-img ph-${(index % 3) + 1}">
         ${photo ? `<img src="${photo}" alt="" loading="lazy">` : ""}
         <span class="tag${isService ? "" : " tag-mint"}">${isService ? "Service" : "Product"}</span>
+         <span class="card-level" data-seller-badge="${listing.seller_id || ""}"></span>
+      
       </div>
       <div class="listing-body">
         <div class="seller row">

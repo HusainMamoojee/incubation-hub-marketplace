@@ -59,7 +59,7 @@ async function loadListings() {
   let query = supabaseClient
     .from("listings")
     .select(
-      "id, title, description, type, category, price, price_unit, image_url, seller:profiles ( first_name, last_name )",
+      "id,seller_id, title, description, type, category, price, price_unit, image_url, seller:profiles ( first_name, last_name )",
       { count: "exact" }
     )
     .eq("status", "active");

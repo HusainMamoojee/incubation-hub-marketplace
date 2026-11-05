@@ -42,6 +42,7 @@
   // Shop header 
   document.title = `${shopName} | Hub Market`;
   document.getElementById("shopName").textContent = shopName;
+    document.getElementById("shopLevel").dataset.sellerBadge = id; // badges.js fills it in
   document.getElementById("shopAvatar").textContent = initials(shopName.split(" ")[0], shopName.split(" ")[1]);
   document.getElementById("shopOwner").textContent =
     `Run by ${shop.first_name}${shop.last_initial ? " " + shop.last_initial + "." : ""}, an Eduvos student`;
@@ -79,7 +80,7 @@
     // renderListingCard() (listing-card.js) expects a seller on each listing
     const seller = { first_name: shop.first_name, last_name: shop.last_initial || "" };
     grid.innerHTML = listings
-      .map((listing, index) => renderListingCard({ ...listing, seller }, index))
+       .map((listing, index) => renderListingCard({ ...listing, seller, seller_id: id }, index))
       .join("");
   }
 

@@ -36,7 +36,7 @@
     document.getElementById("shopSub").textContent =
       `Selling on the ${profile.campus} campus. Manage your orders, listings and messages in one place.`;
   }
-
+  renderLevelProgress(user.id, document.getElementById("levelCard")); // badges.js
   await loadShop(user, profile);
 
   // ---------- Tabs: Orders / Listings / Enquiries ----------

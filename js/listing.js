@@ -88,6 +88,7 @@
 
   document.getElementById("sellerAvatar").textContent = initials(seller.first_name, seller.last_name);
   document.getElementById("sellerShop").textContent = seller.shop_name || sellerName;
+    document.getElementById("sellerLevel").dataset.sellerBadge = listing.seller_id; // badges.js fills it in
   document.getElementById("sellerName").textContent = seller.shop_name ? "by " + sellerName : "";
 
   loading.hidden = true;
